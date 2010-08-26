@@ -68,7 +68,9 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 			}
 			else
 			{
-				// TODO: redirect to the directory
+				Path uriDirPath = uriPath;
+				directorize(uriDirPath);
+				redirectToDirectory(response, uriDirPath.toString(Path::PATH_UNIX));
 			}
 		}
 		else
@@ -204,6 +206,18 @@ void IndigoRequestHandler::sendDirectory(HTTPServerResponse &response, const str
 	sendDirectoryListing(response, dirURI, entries, false);
 }
 
+void IndigoRequestHandler::redirectToDirectory(HTTPServerResponse &response, const string &dirURI)
+{
+	// Not done with response.redirect(dirURI)
+	// because that would send a 302 found, instead of 301 moved permanently
+
+	response.setStatusAndReason(HTTPResponse::HTTP_MOVED_PERMANENTLY);
+	response.setContentLength(0);
+	response.setChunkedTransferEncoding(false);
+	response.set("Location", dirURI);
+	response.send();
+}
+
 bool IndigoRequestHandler::isGoodRequest(const HTTPServerRequest &request, bool *loggable, Path *uriPath)
 {
 	const string &method = request.getMethod();
@@ -255,7 +269,7 @@ void IndigoRequestHandler::logRequest(const HTTPServerRequest &request, bool log
 
 void IndigoRequestHandler::sendError(HTTPServerResponse &response, int code, const string &msg)
 {
-	response.setStatus(HTTPResponse::HTTP_NOT_IMPLEMENTED);
+	response.setStatusAndReason(HTTPResponse::HTTPStatus(code));
 	response.setChunkedTransferEncoding(true);
 	response.setContentType("text/html");
 

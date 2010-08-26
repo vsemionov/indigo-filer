@@ -24,6 +24,7 @@ private:
 	void sendDirectoryListing(HTTPServerResponse &response, const string &dirURI, const vector<string> &entries, bool root);
 	void sendRootDirectory(HTTPServerResponse &response);
 	void sendDirectory(HTTPServerResponse &response, const string &path, const string &dirURI);
+	void redirectToDirectory(HTTPServerResponse &response, const string &dirURI);
 	bool isGoodRequest(const HTTPServerRequest &request, bool *loggable, Path *uriPath);
 	void logRequest(const HTTPServerRequest &request, bool loggable);
 	void sendError(HTTPServerResponse &response, int code, const string &msg);
