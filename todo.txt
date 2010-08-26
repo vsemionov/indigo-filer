@@ -17,6 +17,8 @@ refactor (path ops)
 rename "[..]" to ".."
 redirect to directory
 portable newlines
+README with known issues
+README in installer
 
 1.x:
 auth
