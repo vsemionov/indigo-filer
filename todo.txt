@@ -19,6 +19,7 @@ redirect to directory
 portable newlines
 README with known issues
 README in installer
+check licensing
 
 1.x:
 auth
