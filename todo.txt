@@ -4,7 +4,6 @@ collector option
 spaces in URL
 index of C:\ (error and slow response on error)
 send/recv timeout
-cpu usage
 sourceforge files
 portable newlines
 check licensing
