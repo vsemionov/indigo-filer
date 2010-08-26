@@ -56,8 +56,7 @@ Filename: "sc"; Parameters: "start IndigoFiler"; Description: "Start service"; F
 [UninstallRun]
 Filename: "sc"; Parameters: "stop IndigoFiler"; RunOnceId: "StopService"; Flags: runhidden
 Filename: "sc"; Parameters: "delete IndigoFiler"; RunOnceId: "DelService"; Flags: runhidden
-; workaround for a race condition - wait 1 second for the service to stop before proceeding
-Filename: "ping"; Parameters: "-n 2 -w 1000 127.0.0.1"; RunOnceId: "WaitService"; Flags: runhidden
+Filename: "taskkill"; Parameters: "/F /IM indigo-filer.exe"; RunOnceId: "KillService"; Flags: runhidden
 
 [Code]
 {
@@ -70,6 +69,6 @@ var
 begin
   Exec('sc', 'stop IndigoFiler', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
   Exec('sc', 'delete IndigoFiler', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
-  Exec('ping', '-n 2 -w 1000 127.0.0.1', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  Exec('taskkill', '/F /IM indigo-filer.exe', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
 end;
 
