@@ -12,7 +12,12 @@ ini file share comments
 ini file share examples
 mime types
 sourceforge files
+check headers
+refactor (path ops)
+rename "[..]" to ".."
+redirect to directory
 
-1.0:
+1.x:
 auth
+https
 unicode
