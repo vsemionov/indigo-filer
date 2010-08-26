@@ -11,6 +11,7 @@ makefile comments
 ini file share comments
 ini file share examples
 mime types
+sourceforge files
 
 1.0:
 auth
