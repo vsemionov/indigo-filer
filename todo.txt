@@ -16,6 +16,7 @@ check headers
 refactor (path ops)
 rename "[..]" to ".."
 redirect to directory
+portable newlines
 
 1.x:
 auth
