@@ -13,6 +13,7 @@ sourceforge files
 portable newlines
 check licensing
 other files? (INSTALL)
+installer wait for service shutdown
 
 0.9:
 mime types
