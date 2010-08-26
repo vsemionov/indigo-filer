@@ -19,6 +19,7 @@ public:
 
 private:
 	void directorize(Path &path);
+	void filize(Path &path);
 	Path resolveFsPath(const Path &uriPath, const string &sharePath);
 	void sendDirectoryListing(HTTPServerResponse &response, const string &dirURI, const vector<string> &entries, bool root);
 	void sendRootDirectory(HTTPServerResponse &response);

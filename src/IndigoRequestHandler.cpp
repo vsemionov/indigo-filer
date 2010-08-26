@@ -40,14 +40,14 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 		return;
 	}
 
-	string shareName = uriPath[0];
-	if (uriPath.depth() == 0 && shareName.empty())
+	if (uriPath.isDirectory() && uriPath.depth() == 0)
 	{
 		sendRootDirectory(response);
 		return;
 	}
 
-	string sharePath = configuration.getSharePath(shareName);
+	const string &shareName = uriPath[0];
+	const string &sharePath = configuration.getSharePath(shareName);
 	if (sharePath.empty())
 	{
 		sendNotFound(response);
@@ -62,27 +62,29 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 		File f(target);
 		if (f.isDirectory())
 		{
-			directorize(uriPath);
-			sendDirectory(response, target, uriPath.toString(Path::PATH_UNIX));
-			return;
+			if (uriPath.isDirectory())
+			{
+				sendDirectory(response, target, uriPath.toString(Path::PATH_UNIX));
+			}
+			else
+			{
+				// TODO: redirect to the directory
+			}
 		}
 		else
 		{
 			string ext = fsPath.getExtension();
 			string mediaType = configuration.getMimeType(ext);
 			response.sendFile(target, mediaType);
-			return;
 		}
 	}
 	catch (FileNotFoundException &fnfe)
 	{
 		sendNotFound(response);
-		return;
 	}
 	catch (FileAccessDeniedException &fade)
 	{
 		sendForbidden(response);
-		return;
 	}
 }
 
@@ -93,6 +95,18 @@ void IndigoRequestHandler::directorize(Path &path)
 		string fileName = path.getFileName();
 		path = path.parent();
 		path.pushDirectory(fileName);
+	}
+}
+
+void IndigoRequestHandler::filize(Path &path)
+{
+	directorize(path);
+
+	if (path.depth() > 0)
+	{
+		string fileName = path[path.depth() - 1];
+		path.popDirectory();
+		path.setFileName(fileName);
 	}
 }
 
@@ -107,12 +121,7 @@ Path IndigoRequestHandler::resolveFsPath(const Path &uriPath, const string &shar
 		fsPath.pushDirectory(uriPath[d]);
 	}
 
-	if (fsPath.depth() > 0)
-	{
-		string fileName = fsPath[fsPath.depth() - 1];
-		fsPath.popDirectory();
-		fsPath.setFileName(fileName);
-	}
+	filize(fsPath);
 
 	return fsPath;
 }
@@ -134,7 +143,7 @@ void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, co
 
 	if (!root)
 	{
-		out << "<a href=\"../\">[..]</a><br>" << endl;
+		out << "<a href=\"../\">..</a><br>" << endl;
 	}
 
 	int l = entries.size();

@@ -2,18 +2,14 @@
 enumerate dirs
 collector option
 spaces in URL
-index of C:\
+index of C:\ (error and slow response on error)
 send/recv timeout
-code review handler
 cpu usage
 compiler optimization
 makefile comments
 ini file share comments
 ini file share examples
-mime types
 sourceforge files
-refactor (path ops)
-rename "[..]" to ".."
 redirect to directory
 portable newlines
 README with known issues (installed)
@@ -22,6 +18,11 @@ check licensing
 CONTRIBUTORS file (installed)
 CHANGES file (installed)
 other files? (INSTALL)
+
+0.9:
+mime types
+better listing format
+better logging
 
 1.x:
 handle symlinks
