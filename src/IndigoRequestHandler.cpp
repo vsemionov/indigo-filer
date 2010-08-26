@@ -3,7 +3,8 @@
 
 #include <string>
 #include <vector>
-#include <iostream>
+#include <set>
+#include <ostream>
 #include <sstream>
 
 #include "Poco/Util/ServerApplication.h"
@@ -11,6 +12,7 @@
 #include "Poco/DirectoryIterator.h"
 
 #include "IndigoRequestHandler.h"
+#include "IndigoConfiguration.h"
 
 using namespace std;
 

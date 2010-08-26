@@ -6,8 +6,6 @@
 #include "Poco/Net/HTTPServerResponse.h"
 #include "Poco/Path.h"
 
-#include "IndigoConfiguration.h"
-
 using namespace std;
 
 using namespace Poco;

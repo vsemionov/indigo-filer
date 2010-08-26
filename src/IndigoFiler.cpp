@@ -4,12 +4,12 @@
 #include <map>
 #include <iostream>
 #include <sstream>
-#include <memory>
 
 #include "Poco/Util/ServerApplication.h"
 #include "Poco/Net/HTTPServer.h"
 #include "Poco/Util/HelpFormatter.h"
 
+#include "IndigoConfiguration.h"
 #include "IndigoRequestHandler.h"
 
 using namespace std;

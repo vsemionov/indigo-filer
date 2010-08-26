@@ -6,12 +6,7 @@
 #include <set>
 #include <map>
 
-#include <Poco/SharedPtr.h>
-#include <Poco/Mutex.h>
-
 using namespace std;
-
-using namespace Poco;
 
 class IndigoConfiguration
 {
