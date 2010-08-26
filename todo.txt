@@ -8,6 +8,7 @@ sourceforge files
 portable newlines
 check licensing
 other files? (INSTALL)
+/ and \ in share names (and document at least no /)
 
 0.9:
 mime types
