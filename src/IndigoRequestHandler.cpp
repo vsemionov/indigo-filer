@@ -20,6 +20,10 @@ using namespace Poco;
 using namespace Poco::Util;
 using namespace Poco::Net;
 
+
+POCO_DECLARE_EXCEPTION(, ShareNotFoundException, ApplicationException)
+POCO_IMPLEMENT_EXCEPTION(ShareNotFoundException, ApplicationException, "ShareNotFoundException")
+
 IndigoRequestHandler::IndigoRequestHandler()
 {
 }
@@ -46,20 +50,13 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 		return;
 	}
 
-	const string &shareName = uriPath[0];
-	const string &sharePath = configuration.getSharePath(shareName);
-	if (sharePath.empty())
-	{
-		sendNotFound(response);
-		return;
-	}
-
-	Path fsPath = resolveFsPath(uriPath, sharePath);
-	string target = fsPath.toString();
-
 	try
 	{
+		Path fsPath = resolveFSPath(uriPath);
+		string target = fsPath.toString();
+
 		File f(target);
+
 		if (f.isDirectory())
 		{
 			if (uriPath.isDirectory())
@@ -79,6 +76,10 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 			string mediaType = configuration.getMimeType(ext);
 			response.sendFile(target, mediaType);
 		}
+	}
+	catch (ShareNotFoundException &snfe)
+	{
+		sendNotFound(response);
 	}
 	catch (FileNotFoundException &fnfe)
 	{
@@ -112,8 +113,16 @@ void IndigoRequestHandler::filize(Path &path)
 	}
 }
 
-Path IndigoRequestHandler::resolveFsPath(const Path &uriPath, const string &sharePath)
+Path IndigoRequestHandler::resolveFSPath(const Path &uriPath)
 {
+	const IndigoConfiguration &configuration = IndigoConfiguration::get();
+
+	const string &shareName = uriPath[0];
+	const string &sharePath = configuration.getSharePath(shareName);
+
+	if (sharePath.empty())
+		throw ShareNotFoundException();
+
 	Path fsPath(sharePath);
 
 	directorize(fsPath);
@@ -168,21 +177,22 @@ void IndigoRequestHandler::sendRootDirectory(HTTPServerResponse &response)
 	for (it = shares.begin(); it != end; ++it)
 	{
 		const string &shareName = *it;
-		const string &sharePath = configuration.getSharePath(shareName);
-		if (!sharePath.empty())
+		try
 		{
-			try
-			{
-				Path fsPath = resolveFsPath(Path("/", Path::PATH_UNIX), sharePath);
-				File f(fsPath);
-				string entry = shareName;
-				if (f.isDirectory())
-					entry += '/';
-				entries.push_back(entry);
-			}
-			catch (FileException &fe)
-			{
-			}
+			Path fsPath = resolveFSPath(Path("/" + shareName, Path::PATH_UNIX));
+			File f(fsPath);
+			string entry = shareName;
+			if (f.isDirectory())
+				entry += '/';
+			entries.push_back(entry);
+		}
+		catch (ShareNotFoundException &snfe)
+		{
+			// should not happen - shares are pre-validated
+			// swallow anyway
+		}
+		catch (FileException &fe)
+		{
 		}
 	}
 
