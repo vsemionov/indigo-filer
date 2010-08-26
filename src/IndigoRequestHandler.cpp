@@ -145,7 +145,7 @@ void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, co
 
 	if (!root)
 	{
-		out << "<a href=\"../\">..</a><br>" << endl;
+		out << "<a href=\"../\">&lt;Parent Directory&gt;</a><br>" << endl;
 	}
 
 	int l = entries.size();
