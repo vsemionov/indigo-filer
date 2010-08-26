@@ -11,11 +11,7 @@ ini file share comments
 ini file share examples
 sourceforge files
 portable newlines
-README with known issues (installed)
-README after install
 check licensing
-CONTRIBUTORS file (installed)
-CHANGES file (installed)
 other files? (INSTALL)
 
 0.9:

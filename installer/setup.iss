@@ -37,6 +37,9 @@ Source: "..\src\indigo-filer.ini"; DestDir: "{app}"; Flags: onlyifdoesntexist
 Source: "..\src\indigo-filer.ini"; DestDir: "{app}"; DestName: "indigo-filer-defaults.ini"; Flags: ignoreversion
 Source: "..\LICENSE"; DestDir: "{app}"; DestName: "LICENSE.txt"; Flags: ignoreversion
 Source: "..\VERSION"; DestDir: "{app}"; DestName: "VERSION.txt"; Flags: ignoreversion
+Source: "..\CHANGES"; DestDir: "{app}"; DestName: "CHANGES.txt"; Flags: ignoreversion
+Source: "..\CONTRIBUTORS"; DestDir: "{app}"; DestName: "CONTRIBUTORS.txt"; Flags: ignoreversion
+Source: "..\README"; DestDir: "{app}"; DestName: "README.txt"; Flags: ignoreversion isreadme
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -53,6 +56,8 @@ Filename: "sc"; Parameters: "start IndigoFiler"; Description: "Start service"; F
 [UninstallRun]
 Filename: "sc"; Parameters: "stop IndigoFiler"; RunOnceId: "StopService"; Flags: runhidden
 Filename: "sc"; Parameters: "delete IndigoFiler"; RunOnceId: "DelService"; Flags: runhidden
+; workaround for a race condition - wait 1 second for the service to stop before proceeding
+Filename: "ping"; Parameters: "-n 2 -w 1000 127.0.0.1"; RunOnceId: "WaitService"; Flags: runhidden
 
 [Code]
 {
@@ -65,5 +70,6 @@ var
 begin
   Exec('sc', 'stop IndigoFiler', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
   Exec('sc', 'delete IndigoFiler', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  Exec('ping', '-n 2 -w 1000 127.0.0.1', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
 end;
 
