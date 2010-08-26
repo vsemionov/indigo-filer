@@ -9,6 +9,7 @@ sourceforge files
 portable newlines
 check licensing
 other files? (INSTALL)
+replace ".." with something more obvious
 
 0.9:
 mime types
