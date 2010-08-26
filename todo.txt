@@ -10,7 +10,6 @@ makefile comments
 ini file share comments
 ini file share examples
 sourceforge files
-redirect to directory
 portable newlines
 README with known issues (installed)
 README after install
