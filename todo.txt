@@ -1,0 +1,17 @@
+0.9:
+enumerate dirs
+collector option
+spaces in URL
+index of C:\
+send/recv timeout
+code review handler
+cpu usage
+compiler optimization
+makefile comments
+ini file share comments
+ini file share examples
+mime types
+
+1.0:
+auth
+unicode
