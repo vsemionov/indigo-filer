@@ -5,8 +5,6 @@ spaces in URL
 index of C:\ (error and slow response on error)
 send/recv timeout
 cpu usage
-compiler optimization
-makefile comments
 ini file share comments
 ini file share examples
 sourceforge files
