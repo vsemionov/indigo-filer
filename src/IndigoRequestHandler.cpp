@@ -20,7 +20,6 @@ using namespace Poco;
 using namespace Poco::Util;
 using namespace Poco::Net;
 
-
 POCO_DECLARE_EXCEPTION(, ShareNotFoundException, ApplicationException)
 POCO_IMPLEMENT_EXCEPTION(ShareNotFoundException, ApplicationException, "ShareNotFoundException")
 
@@ -87,7 +86,7 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 	{
 		sendNotFound(response);
 	}
-	catch (FileAccessDeniedException &fade)
+	catch (FileException &fe)
 	{
 		sendForbidden(response);
 	}
@@ -97,7 +96,7 @@ void IndigoRequestHandler::directorize(Path &path)
 {
 	if (path.isFile())
 	{
-		const string &fileName = path.getFileName();
+		string fileName = path.getFileName();
 		path = path.parent();
 		path.pushDirectory(fileName);
 	}
@@ -105,11 +104,9 @@ void IndigoRequestHandler::directorize(Path &path)
 
 void IndigoRequestHandler::filize(Path &path)
 {
-	directorize(path);
-
-	if (path.depth() > 0)
+	if (path.isDirectory() && path.depth() > 0)
 	{
-		const string &fileName = path[path.depth() - 1];
+		string fileName = path[path.depth() - 1];
 		path.popDirectory();
 		path.setFileName(fileName);
 	}
@@ -137,8 +134,8 @@ Path IndigoRequestHandler::resolveFSPath(const Path &uriPath)
 
 	directorize(fsPath);
 
-	const int d = uriPath.depth();
-	for (int i = level; i <= d; i++)
+	const int d = uriPath.depth() + (uriPath.isFile()? 1 : 0);
+	for (int i = level; i < d; i++)
 	{
 		fsPath.pushDirectory(uriPath[i]);
 	}
@@ -148,8 +145,10 @@ Path IndigoRequestHandler::resolveFSPath(const Path &uriPath)
 	return fsPath;
 }
 
-void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, const string &dirURI, const vector<string> &entries, bool root)
+void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, const string &dirURI, const vector<string> &entries)
 {
+	bool root = (dirURI == "/");
+
 	ostream &out = response.send();
 
 	out << "<html>" << endl;
@@ -205,7 +204,7 @@ void IndigoRequestHandler::sendVirtualRootDirectory(HTTPServerResponse &response
 		}
 	}
 
-	sendDirectoryListing(response, "/", entries, true);
+	sendDirectoryListing(response, "/", entries);
 }
 
 void IndigoRequestHandler::sendDirectory(HTTPServerResponse &response, const string &path, const string &dirURI)
@@ -215,14 +214,21 @@ void IndigoRequestHandler::sendDirectory(HTTPServerResponse &response, const str
 	DirectoryIterator end;
 	while (it != end)
 	{
-		string entry = it.name();
-		if (it->isDirectory())
-			entry += '/';
-		entries.push_back(entry);
+		try
+		{
+			string entry = it.name();
+			if (it->isDirectory())
+				entry += '/';
+			entries.push_back(entry);
+		}
+		catch (FileException &fe)
+		{
+		}
+
 		++it;
 	}
 
-	sendDirectoryListing(response, dirURI, entries, false);
+	sendDirectoryListing(response, dirURI, entries);
 }
 
 void IndigoRequestHandler::redirectToDirectory(HTTPServerResponse &response, const string &dirURI, bool permanent)

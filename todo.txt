@@ -1,11 +1,9 @@
 0.5:
+more specific http error codes
 collector option
-enumerate dirs
-index of C:\ (error and slow response on error)
-/ and \ in share names (and document at least no /)
-spaces in URL
-portable newlines
-send/recv timeout
+decode special characters in URL
+SVN portable newlines
+test send/recv timeout
 check licensing
 other files? (INSTALL)
 sourceforge files

@@ -21,7 +21,7 @@ private:
 	void directorize(Path &path);
 	void filize(Path &path);
 	Path resolveFSPath(const Path &uriPath);
-	void sendDirectoryListing(HTTPServerResponse &response, const string &dirURI, const vector<string> &entries, bool root);
+	void sendDirectoryListing(HTTPServerResponse &response, const string &dirURI, const vector<string> &entries);
 	void sendVirtualRootDirectory(HTTPServerResponse &response);
 	void sendDirectory(HTTPServerResponse &response, const string &path, const string &dirURI);
 	void redirectToDirectory(HTTPServerResponse &response, const string &dirURI, bool permanent);
