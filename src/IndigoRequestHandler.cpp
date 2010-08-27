@@ -46,8 +46,11 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 
 	if (uriPath.isDirectory() && uriPath.depth() == 0)
 	{
-		sendRootDirectory(response);
-		return;
+		if (configuration.getRoot().empty())
+		{
+			sendVirtualRootDirectory(response);
+			return;
+		}
 	}
 
 	try
@@ -56,7 +59,6 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 		const string &target = fsPath.toString();
 
 		File f(target);
-
 		if (f.isDirectory())
 		{
 			if (uriPath.isDirectory())
@@ -118,17 +120,25 @@ Path IndigoRequestHandler::resolveFSPath(const Path &uriPath)
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
 
 	const string &shareName = uriPath[0];
-	const string &sharePath = configuration.getSharePath(shareName);
+	string base = configuration.getSharePath(shareName);
+	int level = 1;
 
-	if (sharePath.empty())
-		throw ShareNotFoundException();
+	if (base.empty())
+	{
+		base = configuration.getRoot();
 
-	Path fsPath(sharePath);
+		if (base.empty())
+			throw ShareNotFoundException();
+
+		level = 0;
+	}
+
+	Path fsPath(base);
 
 	directorize(fsPath);
 
 	const int d = uriPath.depth();
-	for (int i = 1; i <= d; i++)
+	for (int i = level; i <= d; i++)
 	{
 		fsPath.pushDirectory(uriPath[i]);
 	}
@@ -168,7 +178,7 @@ void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, co
 	out << "</html>" << endl;
 }
 
-void IndigoRequestHandler::sendRootDirectory(HTTPServerResponse &response)
+void IndigoRequestHandler::sendVirtualRootDirectory(HTTPServerResponse &response)
 {
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
 	const set<string> &shares = configuration.getShares();
@@ -189,8 +199,6 @@ void IndigoRequestHandler::sendRootDirectory(HTTPServerResponse &response)
 		}
 		catch (ShareNotFoundException &snfe)
 		{
-			// should not happen - shares are pre-validated
-			// swallow anyway
 		}
 		catch (FileException &fe)
 		{
