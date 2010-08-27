@@ -1,1 +1,28 @@
-Known issues:
+GENERAL NOTES
+
+Indigo Filer can serve a virtual root directory that is composed of zero or
+more shares. This "virtual" root directory, that clients see, is not a real
+directory on the filesystem. Its entries are user-specified shares, which do
+not have to be located in the same parent directory. A share can be any
+filesystem object (file, directory, etc.). Every share has a unique name and a
+path. Shared objects do not need to exist on the filesystem - in that case they
+do not appear in listings, and requests for them result in error responses.
+Shares are specified as settings in the [VirtualRoot] section in the
+configuration file with the following format:
+<share-name> = <share-path>.
+Share names may not contain the '/' character.
+NOTE: If Server.root is set to a filesystem path, the root directory listing
+will contain entries of the real root, but requests with an URI other than "/"
+that match a share name will be served from the matching share.
+
+
+KNOWN ISSUES
+
+* A limitation in the POCO library prevents idle threads from being signaled to
+terminate if a high connection rate suddenly drops to zero. To work around
+this, you can use the Server.collectIdleThreads option. This is safe and works
+in most cases, but is disabled by default, because it uses undocumented
+behavior. Try enabling this option if the process often has a large number of
+threads when new connections are not arriving. Even when this options is
+enabled, idle threads will be signaled to terminate only when there are no
+requests currently processed.

@@ -26,6 +26,7 @@ const IndigoConfiguration &IndigoConfiguration::init(
 		int minThreads,
 		int maxThreads,
 		int maxQueued,
+		bool collectIdleThreads,
 		const string &root,
 		const map<string, string> &shares,
 		const map<string, string> &mimeTypes
@@ -41,6 +42,7 @@ const IndigoConfiguration &IndigoConfiguration::init(
 		minThreads,
 		maxThreads,
 		maxQueued,
+		collectIdleThreads,
 		root,
 		shares,
 		mimeTypes
@@ -64,6 +66,7 @@ IndigoConfiguration::IndigoConfiguration(
 	int minThreads,
 	int maxThreads,
 	int maxQueued,
+	bool collectIdleThreads,
 	const string &root,
 	const map<string, string> &shares,
 	const map<string, string> &mimeTypes
@@ -75,6 +78,7 @@ IndigoConfiguration::IndigoConfiguration(
 		minThreads(minThreads),
 		maxThreads(maxThreads),
 		maxQueued(maxQueued),
+		collectIdleThreads(collectIdleThreads),
 		root(root),
 		shares(shares),
 		mimeTypes(mimeTypes),
@@ -150,6 +154,11 @@ int IndigoConfiguration::getMaxThreads() const
 int IndigoConfiguration::getMaxQueued() const
 {
 	return maxQueued;
+}
+
+bool IndigoConfiguration::getCollectIdleThreads() const
+{
+	return collectIdleThreads;
 }
 
 const string &IndigoConfiguration::getRoot() const

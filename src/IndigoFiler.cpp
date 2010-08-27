@@ -4,6 +4,7 @@
 #include <map>
 #include <iostream>
 #include <sstream>
+#include <memory>
 
 #include "Poco/Util/ServerApplication.h"
 #include "Poco/Net/HTTPServer.h"
@@ -26,6 +27,33 @@ public:
 	{
 		return new IndigoRequestHandler();
 	}
+};
+
+class ThreadPoolCollector: public Runnable
+{
+public:
+	ThreadPoolCollector(ThreadPool &pool):
+		pool(pool),
+		stopCollection()
+	{
+	}
+
+	void run()
+	{
+		while (!stopCollection.tryWait(1000))
+		{
+			pool.collect();
+		}
+	}
+
+	void stopCollecting()
+	{
+		stopCollection.set();
+	}
+
+private:
+	ThreadPool &pool;
+	Event stopCollection;
 };
 
 class IndigoFiler: public ServerApplication
@@ -101,7 +129,7 @@ protected:
 	map<string, string> readMimeTypes()
 	{
 		map<string, string> mimeTypes;
-		// TODO: init mime types
+		// left blank for now
 		return mimeTypes;
 	}
 
@@ -115,6 +143,8 @@ protected:
 		{
 			const string serverSection = "Server";
 
+			bool collectIdleThreads = (config().getString(serverSection + "." + "collectIdleThreads", "no") == "yes");
+
 			string root = config().getString(serverSection + "." + "root", "virtual");
 			if (root == "virtual")
 				root = "";
@@ -127,6 +157,7 @@ protected:
 				config().getInt(serverSection + "." + "minThreads", 2),
 				config().getInt(serverSection + "." + "maxThreads", 16),
 				config().getInt(serverSection + "." + "maxQueued", 64),
+				collectIdleThreads,
 				root,
 				readShares(),
 				readMimeTypes()
@@ -146,11 +177,26 @@ protected:
 			SocketAddress saddr(configuration.getAddress(), configuration.getPort());
 			ServerSocket sock(saddr, configuration.getBacklog());
 
+			auto_ptr<ThreadPoolCollector> collector(NULL);
+			auto_ptr<Thread> collectorThread(NULL);
+			if (configuration.getCollectIdleThreads())
+			{
+				collector.reset(new ThreadPoolCollector(pool));
+				collectorThread.reset(new Thread());
+				collectorThread->start(*collector);
+			}
+
 			HTTPServer srv(factory, pool, sock, params);
 
 			srv.start();
 			waitForTerminationRequest();
 			srv.stop();
+
+			if (collectorThread.get())
+			{
+				collector->stopCollecting();
+				collectorThread->join();
+			}
 		}
 
 		return EXIT_OK;

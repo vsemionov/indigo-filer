@@ -1,8 +1,9 @@
 0.5:
+hidden files
+mime types
 check request parsing and processing
 validate share names
 more specific http error codes
-collector option
 decode special characters in URL
 SVN portable newlines
 test send/recv timeout
@@ -15,7 +16,6 @@ unix support
 handle symlinks
 better logging
 better listing format
-mime types
 
 1.x:
 unicode support (filenames)
