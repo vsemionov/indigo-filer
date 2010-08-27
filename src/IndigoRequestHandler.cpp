@@ -52,8 +52,8 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 
 	try
 	{
-		Path fsPath = resolveFSPath(uriPath);
-		string target = fsPath.toString();
+		const Path &fsPath = resolveFSPath(uriPath);
+		const string &target = fsPath.toString();
 
 		File f(target);
 
@@ -72,8 +72,8 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 		}
 		else
 		{
-			string ext = fsPath.getExtension();
-			string mediaType = configuration.getMimeType(ext);
+			const string &ext = fsPath.getExtension();
+			const string &mediaType = configuration.getMimeType(ext);
 			response.sendFile(target, mediaType);
 		}
 	}
@@ -95,7 +95,7 @@ void IndigoRequestHandler::directorize(Path &path)
 {
 	if (path.isFile())
 	{
-		string fileName = path.getFileName();
+		const string &fileName = path.getFileName();
 		path = path.parent();
 		path.pushDirectory(fileName);
 	}
@@ -107,7 +107,7 @@ void IndigoRequestHandler::filize(Path &path)
 
 	if (path.depth() > 0)
 	{
-		string fileName = path[path.depth() - 1];
+		const string &fileName = path[path.depth() - 1];
 		path.popDirectory();
 		path.setFileName(fileName);
 	}
@@ -127,9 +127,10 @@ Path IndigoRequestHandler::resolveFSPath(const Path &uriPath)
 
 	directorize(fsPath);
 
-	for (int d = 1; d <= uriPath.depth(); d++)
+	const int d = uriPath.depth();
+	for (int i = 1; i <= d; i++)
 	{
-		fsPath.pushDirectory(uriPath[d]);
+		fsPath.pushDirectory(uriPath[i]);
 	}
 
 	filize(fsPath);
@@ -157,7 +158,7 @@ void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, co
 		out << "<a href=\"../\">&lt;Parent Directory&gt;</a><br>" << endl;
 	}
 
-	int l = entries.size();
+	const int l = entries.size();
 	for (int i = 0; i < l; i++)
 	{
 		out << "<a href=\"" << entries[i] << "\">" << entries[i] << "</a>" << "<br>" << endl;
@@ -173,13 +174,13 @@ void IndigoRequestHandler::sendRootDirectory(HTTPServerResponse &response)
 	const set<string> &shares = configuration.getShares();
 	vector<string> entries;
 	set<string>::const_iterator it;
-	set<string>::const_iterator end = shares.end();
+	const set<string>::const_iterator &end = shares.end();
 	for (it = shares.begin(); it != end; ++it)
 	{
 		const string &shareName = *it;
 		try
 		{
-			Path fsPath = resolveFSPath(Path("/" + shareName, Path::PATH_UNIX));
+			const Path &fsPath = resolveFSPath(Path("/" + shareName, Path::PATH_UNIX));
 			File f(fsPath);
 			string entry = shareName;
 			if (f.isDirectory())
@@ -264,12 +265,12 @@ bool IndigoRequestHandler::isGoodRequest(const HTTPServerRequest &request, bool 
 
 void IndigoRequestHandler::logRequest(const HTTPServerRequest &request, bool loggable)
 {
-	ServerApplication &app = dynamic_cast<ServerApplication &>(Application::instance());
+	const ServerApplication &app = dynamic_cast<ServerApplication &>(Application::instance());
 	if (app.isInteractive())
 	{
 		const string &method = request.getMethod();
 		const string &uri = request.getURI();
-		string host = request.clientAddress().host().toString();
+		const string &host = request.clientAddress().host().toString();
 
 		string logString;
 		if (loggable)

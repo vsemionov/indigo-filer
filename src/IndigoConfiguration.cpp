@@ -148,7 +148,7 @@ const set<string> &IndigoConfiguration::getShares() const
 
 const string &IndigoConfiguration::getSharePath(const string &share) const
 {
-	map<string, string>::const_iterator it = shares.find(share);
+	const map<string, string>::const_iterator &it = shares.find(share);
 	if (it != shares.end())
 		return it->second;
 	else
@@ -157,7 +157,7 @@ const string &IndigoConfiguration::getSharePath(const string &share) const
 
 const string &IndigoConfiguration::getMimeType(const string &extension) const
 {
-	map<string, string>::const_iterator it = mimeTypes.find(extension);
+	const map<string, string>::const_iterator &it = mimeTypes.find(extension);
 	if (it != mimeTypes.end())
 		return it->second;
 	else
