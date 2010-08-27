@@ -27,11 +27,12 @@ private:
 	void redirectToDirectory(HTTPServerResponse &response, const string &dirURI, bool permanent);
 	bool isGoodRequest(const HTTPServerRequest &request, bool *loggable, Path *uriPath);
 	void logRequest(const HTTPServerRequest &request, bool loggable);
-	void sendError(HTTPServerResponse &response, int code, const string &msg);
+	void sendError(HTTPServerResponse &response, int code);
 	void sendBadRequest(HTTPServerResponse &response);
 	void sendNotImplemented(HTTPServerResponse &response);
 	void sendNotFound(HTTPServerResponse &response);
 	void sendForbidden(HTTPServerResponse &response);
+	void sendInternalServerError(HTTPServerResponse &response);
 };
 
 #endif //INDIGOREQUESTHANDLER_H

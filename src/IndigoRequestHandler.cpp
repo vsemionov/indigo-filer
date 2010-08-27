@@ -86,9 +86,13 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 	{
 		sendNotFound(response);
 	}
-	catch (FileException &fe)
+	catch (FileAccessDeniedException &fade)
 	{
 		sendForbidden(response);
+	}
+	catch (FileException &fe)
+	{
+		sendInternalServerError(response);
 	}
 }
 
@@ -296,38 +300,48 @@ void IndigoRequestHandler::logRequest(const HTTPServerRequest &request, bool log
 	}
 }
 
-void IndigoRequestHandler::sendError(HTTPServerResponse &response, int code, const string &msg)
+void IndigoRequestHandler::sendError(HTTPServerResponse &response, int code)
 {
+	if (response.sent())
+		return;
+
 	response.setStatusAndReason(HTTPResponse::HTTPStatus(code));
 	response.setChunkedTransferEncoding(true);
 	response.setContentType("text/html");
+
+	const string &reason = response.getReason();
 
 	ostringstream ostr;
 	ostr << code;
 
 	ostream &out = response.send();
 	out << "<html>";
-	out << "<head><title>" + ostr.str() + " " + msg + "</title></head>";
-	out << "<body><h1>" + msg + "</h1></body>";
+	out << "<head><title>" + ostr.str() + " " + reason + "</title></head>";
+	out << "<body><h1>" + reason + "</h1></body>";
 	out << "</html>";
 }
 
 void IndigoRequestHandler::sendBadRequest(HTTPServerResponse &response)
 {
-	sendError(response, HTTPResponse::HTTP_BAD_REQUEST, "Bad Request");
+	sendError(response, HTTPResponse::HTTP_BAD_REQUEST);
 }
 
 void IndigoRequestHandler::sendNotImplemented(HTTPServerResponse &response)
 {
-	sendError(response, HTTPResponse::HTTP_NOT_IMPLEMENTED, "Not Implemented");
+	sendError(response, HTTPResponse::HTTP_NOT_IMPLEMENTED);
 }
 
 void IndigoRequestHandler::sendNotFound(HTTPServerResponse &response)
 {
-	sendError(response, HTTPResponse::HTTP_NOT_FOUND, "Not Found");
+	sendError(response, HTTPResponse::HTTP_NOT_FOUND);
 }
 
 void IndigoRequestHandler::sendForbidden(HTTPServerResponse &response)
 {
-	sendError(response, HTTPResponse::HTTP_FORBIDDEN, "Forbidden");
+	sendError(response, HTTPResponse::HTTP_FORBIDDEN);
+}
+
+void IndigoRequestHandler::sendInternalServerError(HTTPServerResponse &response)
+{
+	sendError(response, HTTPResponse::HTTP_INTERNAL_SERVER_ERROR);
 }
