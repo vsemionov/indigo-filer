@@ -74,18 +74,24 @@ protected:
 
 	map<string, string> readShares()
 	{
+		const string sharesSection = "VirtualRoot";
+
 		map<string, string> shares;
 
-		string cfgShares = config().getString("Root.shares", "");
-		istringstream in(cfgShares);
-		string shareName;
-		while (in >> shareName)
+		AbstractConfiguration::Keys keys;
+		config().keys(sharesSection, keys);
+
+		for (size_t i = 0; i < keys.size(); i++)
 		{
-			string sharePath = config().getString("Root." + shareName, "");
-			if (sharePath.empty() == false)
-			{
-				shares[shareName] = sharePath;
-			}
+			const string &shareName = keys[i];
+			if (shareName.empty())
+				continue;
+
+			const string &sharePath = config().getString(sharesSection + "." + shareName, "");
+			if (sharePath.empty())
+				continue;
+
+			shares[shareName] = sharePath;
 		}
 
 		return shares;
