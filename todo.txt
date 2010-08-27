@@ -1,22 +1,23 @@
 0.5:
-enumerate dirs
 collector option
 spaces in URL
+enumerate dirs
 index of C:\ (error and slow response on error)
+/ and \ in share names (and document at least no /)
 send/recv timeout
-sourceforge files
 portable newlines
 check licensing
 other files? (INSTALL)
-/ and \ in share names (and document at least no /)
+sourceforge files
 
 0.9:
-mime types
-better listing format
+unix support
+handle symlinks
 better logging
+better listing format
+mime types
 
 1.x:
-handle symlinks
+unicode support (filenames)
 authentication
 https support
-unicode support (filenames)
