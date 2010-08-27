@@ -1,4 +1,5 @@
 0.5:
+check request parsing and processing
 validate share names
 more specific http error codes
 collector option
