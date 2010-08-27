@@ -9,6 +9,7 @@
 #include "Poco/Net/HTTPServer.h"
 #include "Poco/Util/HelpFormatter.h"
 
+#include "IndigoFiler.h"
 #include "IndigoConfiguration.h"
 #include "IndigoRequestHandler.h"
 
@@ -112,14 +113,21 @@ protected:
 		}
 		else
 		{
+			const string serverSection = "Server";
+
+			string root = config().getString(serverSection + "." + "root", "virtual");
+			if (root == "virtual")
+				root = "";
+
 			const IndigoConfiguration &configuration = IndigoConfiguration::init(
-				config().getString("Server.name", ""),
-				config().getString("Server.address", "0.0.0.0"),
-				config().getInt("Server.port", 80),
-				config().getInt("Server.backlog", 64),
-				config().getInt("Server.minThreads", 2),
-				config().getInt("Server.maxThreads", 16),
-				config().getInt("Server.maxQueued", 64),
+				config().getString(serverSection + "." + "name", ""),
+				config().getString(serverSection + "." + "address", "0.0.0.0"),
+				config().getInt(serverSection + "." + "port", 80),
+				config().getInt(serverSection + "." + "backlog", 64),
+				config().getInt(serverSection + "." + "minThreads", 2),
+				config().getInt(serverSection + "." + "maxThreads", 16),
+				config().getInt(serverSection + "." + "maxQueued", 64),
+				root,
 				readShares(),
 				readMimeTypes()
 				);
@@ -129,7 +137,7 @@ protected:
 			params->setMaxThreads(configuration.getMaxThreads());
 			params->setMaxQueued(configuration.getMaxQueued());
 			params->setServerName(configuration.getServerName());
-			params->setSoftwareVersion("IndigoFiler/0.1");
+			params->setSoftwareVersion(APP_NAME_WORD "/" APP_VERSION);
 
 			HTTPRequestHandlerFactory::Ptr factory = new IndigoRequestHandlerFactory();
 

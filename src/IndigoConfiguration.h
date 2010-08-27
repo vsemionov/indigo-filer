@@ -19,6 +19,7 @@ public:
 		int minThreads,
 		int maxThreads,
 		int maxQueued,
+		const string &root,
 		const map<string, string> &shares,
 		const map<string, string> &mimeTypes
 		);
@@ -34,6 +35,8 @@ public:
 	int getMaxThreads() const;
 	int getMaxQueued() const;
 
+	const string &getRoot() const;
+
 	const set<string> &getShares() const;
 	const string &getSharePath(const string &share) const;
 
@@ -48,6 +51,7 @@ private:
 		int minThreads,
 		int maxThreads,
 		int maxQueued,
+		const string &root,
 		const map<string, string> &shares,
 		const map<string, string> &mimeTypes
 		);
@@ -61,6 +65,7 @@ private:
 	const int minThreads;
 	const int maxThreads;
 	const int maxQueued;
+	const string root;
 	const map<string, string> shares;
 	const map<string, string> mimeTypes;
 

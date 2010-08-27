@@ -26,6 +26,7 @@ const IndigoConfiguration &IndigoConfiguration::init(
 		int minThreads,
 		int maxThreads,
 		int maxQueued,
+		const string &root,
 		const map<string, string> &shares,
 		const map<string, string> &mimeTypes
 		)
@@ -40,6 +41,7 @@ const IndigoConfiguration &IndigoConfiguration::init(
 		minThreads,
 		maxThreads,
 		maxQueued,
+		root,
 		shares,
 		mimeTypes
 		);
@@ -62,6 +64,7 @@ IndigoConfiguration::IndigoConfiguration(
 	int minThreads,
 	int maxThreads,
 	int maxQueued,
+	const string &root,
 	const map<string, string> &shares,
 	const map<string, string> &mimeTypes
 	):
@@ -72,6 +75,7 @@ IndigoConfiguration::IndigoConfiguration(
 		minThreads(minThreads),
 		maxThreads(maxThreads),
 		maxQueued(maxQueued),
+		root(root),
 		shares(shares),
 		mimeTypes(mimeTypes),
 		sharesSet()
@@ -96,6 +100,13 @@ void IndigoConfiguration::validate() const
 
 	if (maxQueued < 1 || maxQueued > 32768)
 		throw ApplicationException("invalid maxQueued setting - must have a value between 1 and 32768");
+
+	if (!root.empty())
+	{
+		Path p(root);
+		if (!p.isAbsolute())
+			throw ApplicationException("\"" + root + "\" is not an absolute path");
+	}
 
 	map<string, string>::const_iterator it;
 	for (it = shares.begin(); it != shares.end(); ++it)
@@ -139,6 +150,11 @@ int IndigoConfiguration::getMaxThreads() const
 int IndigoConfiguration::getMaxQueued() const
 {
 	return maxQueued;
+}
+
+const string &IndigoConfiguration::getRoot() const
+{
+	return root;
 }
 
 const set<string> &IndigoConfiguration::getShares() const
