@@ -67,7 +67,7 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 			else
 			{
 				Path uriDirPath = uriPath;
-				directorize(uriDirPath);
+				uriDirPath.makeDirectory();
 				redirectToDirectory(response, uriDirPath.toString(Path::PATH_UNIX), false);
 			}
 		}
@@ -96,26 +96,6 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 	}
 }
 
-void IndigoRequestHandler::directorize(Path &path)
-{
-	if (path.isFile())
-	{
-		string fileName = path.getFileName();
-		path = path.parent();
-		path.pushDirectory(fileName);
-	}
-}
-
-void IndigoRequestHandler::filize(Path &path)
-{
-	if (path.isDirectory() && path.depth() > 0)
-	{
-		string fileName = path[path.depth() - 1];
-		path.popDirectory();
-		path.setFileName(fileName);
-	}
-}
-
 Path IndigoRequestHandler::resolveFSPath(const Path &uriPath)
 {
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
@@ -136,7 +116,7 @@ Path IndigoRequestHandler::resolveFSPath(const Path &uriPath)
 
 	Path fsPath(base);
 
-	directorize(fsPath);
+	fsPath.makeDirectory();
 
 	const int d = uriPath.depth() + (uriPath.isFile()? 1 : 0);
 	for (int i = level; i < d; i++)
@@ -144,7 +124,7 @@ Path IndigoRequestHandler::resolveFSPath(const Path &uriPath)
 		fsPath.pushDirectory(uriPath[i]);
 	}
 
-	filize(fsPath);
+	fsPath.makeFile();
 
 	return fsPath;
 }
@@ -185,7 +165,9 @@ void IndigoRequestHandler::sendVirtualRootDirectory(HTTPServerResponse &response
 {
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
 	const set<string> &shares = configuration.getShares();
+
 	vector<string> entries;
+
 	set<string>::const_iterator it;
 	const set<string>::const_iterator &end = shares.end();
 	for (it = shares.begin(); it != end; ++it)
@@ -195,10 +177,15 @@ void IndigoRequestHandler::sendVirtualRootDirectory(HTTPServerResponse &response
 		{
 			const Path &fsPath = resolveFSPath(Path("/" + shareName, Path::PATH_UNIX));
 			File f(fsPath);
-			string entry = shareName;
-			if (f.isDirectory())
-				entry += '/';
-			entries.push_back(entry);
+
+			if (!f.isHidden())
+			{
+				string entry = shareName;
+				if (f.isDirectory())
+					entry += '/';
+
+				entries.push_back(entry);
+			}
 		}
 		catch (ShareNotFoundException &snfe)
 		{
@@ -214,16 +201,21 @@ void IndigoRequestHandler::sendVirtualRootDirectory(HTTPServerResponse &response
 void IndigoRequestHandler::sendDirectory(HTTPServerResponse &response, const string &path, const string &dirURI)
 {
 	vector<string> entries;
+
 	DirectoryIterator it(path);
 	DirectoryIterator end;
 	while (it != end)
 	{
 		try
 		{
-			string entry = it.name();
-			if (it->isDirectory())
-				entry += '/';
-			entries.push_back(entry);
+			if (!it->isHidden())
+			{
+				string entry = it.name();
+				if (it->isDirectory())
+					entry += '/';
+
+				entries.push_back(entry);
+			}
 		}
 		catch (FileException &fe)
 		{

@@ -18,8 +18,6 @@ public:
 	void handleRequest(HTTPServerRequest &request, HTTPServerResponse &response);
 
 private:
-	void directorize(Path &path);
-	void filize(Path &path);
 	Path resolveFSPath(const Path &uriPath);
 	void sendDirectoryListing(HTTPServerResponse &response, const string &dirURI, const vector<string> &entries);
 	void sendVirtualRootDirectory(HTTPServerResponse &response);

@@ -1,10 +1,9 @@
 0.5:
-hidden files
-mime types
-check request parsing and processing
 validate share names
 more specific http error codes
+mime types
 decode special characters in URL
+check request parsing and processing
 SVN portable newlines
 test send/recv timeout
 check licensing
