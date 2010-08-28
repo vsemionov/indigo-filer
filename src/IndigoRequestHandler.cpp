@@ -39,7 +39,7 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 	bool process = true;
 	bool loggable = true;
 
-	if (method != "GET")
+	if (method != HTTPRequest::HTTP_GET)
 	{
 		process = false;
 		if (method.length() > 32)
