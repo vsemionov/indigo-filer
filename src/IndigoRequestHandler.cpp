@@ -144,7 +144,6 @@ Path IndigoRequestHandler::resolveFSPath(const Path &uriPath)
 	if (base.empty())
 	{
 		base = configuration.getRoot();
-
 		if (base.empty())
 			throw ShareNotFoundException();
 
@@ -152,7 +151,6 @@ Path IndigoRequestHandler::resolveFSPath(const Path &uriPath)
 	}
 
 	Path fsPath(base);
-
 	fsPath.makeDirectory();
 
 	const int d = uriPath.depth() + (uriPath.isFile()? 1 : 0);
@@ -162,7 +160,6 @@ Path IndigoRequestHandler::resolveFSPath(const Path &uriPath)
 	}
 
 	fsPath.makeFile();
-
 	return fsPath;
 }
 
