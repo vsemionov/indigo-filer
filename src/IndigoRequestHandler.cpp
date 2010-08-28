@@ -156,11 +156,9 @@ Path IndigoRequestHandler::resolveFSPath(const Path &uriPath)
 	{
 		fsPath.makeDirectory();
 
-		const int d = uriPath.depth() + (uriPath.isFile()? 1 : 0);
-		for (int i = 1; i < d; i++)
-		{
+		const int d = uriPath.depth();
+		for (int i = 1; i <= d; i++)
 			fsPath.pushDirectory(uriPath[i]);
-		}
 	}
 	else
 	{
