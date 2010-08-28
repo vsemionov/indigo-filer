@@ -1,5 +1,4 @@
 0.5:
-validate share names
 mime types
 decode special characters in URL
 check request parsing and processing

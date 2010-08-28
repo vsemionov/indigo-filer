@@ -93,18 +93,6 @@ IndigoConfiguration::IndigoConfiguration(
 
 void IndigoConfiguration::validate() const
 {
-	if (port < 1 || port > 65535)
-		throw ApplicationException("invalid port setting - must have a value between 1 and 65535");
-
-	if (minThreads < 1 || minThreads > 32768)
-		throw ApplicationException("invalid minThreads setting - must have a value between 1 and 32768");
-
-	if (maxThreads < minThreads || maxThreads > 32768)
-		throw ApplicationException("invalid maxThreads setting - must have a value between minThreads and 32768");
-
-	if (maxQueued < 1 || maxQueued > 32768)
-		throw ApplicationException("invalid maxQueued setting - must have a value between 1 and 32768");
-
 	if (!root.empty())
 	{
 		Path p(root);
