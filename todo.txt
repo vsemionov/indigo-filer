@@ -7,6 +7,7 @@ check request parsing and processing
 test send/recv timeout
 check licensing
 other files? (INSTALL)
+decide on and correct versioning
 sourceforge files
 
 0.9:
@@ -14,8 +15,10 @@ unix support
 handle symlinks
 better logging
 better listing format
+correct versioning
 
 1.x:
 unicode support (filenames)
 authentication
-https support
+https support (maybe)
+correct versioning
