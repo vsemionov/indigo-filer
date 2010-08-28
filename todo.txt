@@ -1,5 +1,7 @@
 0.5:
 logged host incorrect
+support transfer encoding
+check other request fields - version, contentLength, expectContinue, ...
 mime types
 decode special characters in URL
 SVN portable newlines
