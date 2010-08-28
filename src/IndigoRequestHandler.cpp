@@ -29,19 +29,48 @@ IndigoRequestHandler::IndigoRequestHandler()
 
 void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerResponse &response)
 {
-	Path uriPath;
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
 
-	bool loggable;
-	bool goodRequest = isGoodRequest(request, &loggable, &uriPath);
+	const string &method = request.getMethod();
+	const string &uri = request.getURI();
+
+	Path uriPath;
+
+	bool process = true;
+	bool loggable = true;
+
+	if (method != "GET")
+	{
+		process = false;
+		if (method.length() > 32)
+			loggable = false;
+		sendMethodNotAllowed(response);
+	}
+
+	if (uri.length() > 256)
+	{
+		loggable = false;
+		if (uri.length() > 4096)
+		{
+			process = false;
+			sendRequestURITooLong(response);
+		}
+	}
+
+	if (process)
+	{
+		uriPath.assign(uri, Path::PATH_UNIX);
+		if (!uriPath.isAbsolute())
+		{
+			process = false;
+			sendBadRequest(response);
+		}
+	}
 
 	logRequest(request, loggable);
 
-	if (!goodRequest)
-	{
-		sendBadRequest(response);
+	if (!process)
 		return;
-	}
 
 	if (uriPath.isDirectory() && uriPath.depth() == 0)
 	{
@@ -91,6 +120,14 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 		sendForbidden(response);
 	}
 	catch (FileException &fe)
+	{
+		sendInternalServerError(response);
+	}
+	catch (PathSyntaxException &pse)
+	{
+		sendNotImplemented(response);
+	}
+	catch (...)
 	{
 		sendInternalServerError(response);
 	}
@@ -193,6 +230,9 @@ void IndigoRequestHandler::sendVirtualRootDirectory(HTTPServerResponse &response
 		catch (FileException &fe)
 		{
 		}
+		catch (PathSyntaxException &pse)
+		{
+		}
 	}
 
 	sendDirectoryListing(response, "/", entries);
@@ -220,6 +260,9 @@ void IndigoRequestHandler::sendDirectory(HTTPServerResponse &response, const str
 		catch (FileException &fe)
 		{
 		}
+		catch (PathSyntaxException &pse)
+		{
+		}
 
 		++it;
 	}
@@ -243,36 +286,6 @@ void IndigoRequestHandler::redirectToDirectory(HTTPServerResponse &response, con
 	}
 }
 
-bool IndigoRequestHandler::isGoodRequest(const HTTPServerRequest &request, bool *loggable, Path *uriPath)
-{
-	const string &method = request.getMethod();
-	const string &uri = request.getURI();
-
-	bool good = true;
-	*loggable = true;
-
-	if (method != "GET")
-	{
-		good = false;
-		if (method.length() > 32)
-			*loggable = false;
-	}
-
-	if (uri.length() > 1024)
-	{
-		good =  false;
-		*loggable = false;
-	}
-	else
-	{
-		uriPath->assign(uri, Path::PATH_UNIX);
-		if (!uriPath->isAbsolute())
-			good = false;
-	}
-
-	return good;
-}
-
 void IndigoRequestHandler::logRequest(const HTTPServerRequest &request, bool loggable)
 {
 	const ServerApplication &app = dynamic_cast<ServerApplication &>(Application::instance());
@@ -286,7 +299,7 @@ void IndigoRequestHandler::logRequest(const HTTPServerRequest &request, bool log
 		if (loggable)
 			logString = host + " - " + method + " " + uri;
 		else
-			logString = "Bad request from " + host;
+			logString = "Request from " + host;
 
 		app.logger().information(logString);
 	}
@@ -311,6 +324,16 @@ void IndigoRequestHandler::sendError(HTTPServerResponse &response, int code)
 	out << "<head><title>" + ostr.str() + " " + reason + "</title></head>";
 	out << "<body><h1>" + reason + "</h1></body>";
 	out << "</html>";
+}
+
+void IndigoRequestHandler::sendMethodNotAllowed(HTTPServerResponse &response)
+{
+	sendError(response, HTTPResponse::HTTP_METHOD_NOT_ALLOWED);
+}
+
+void IndigoRequestHandler::sendRequestURITooLong(HTTPServerResponse &response)
+{
+	sendError(response, HTTPResponse::HTTP_REQUESTURITOOLONG);
 }
 
 void IndigoRequestHandler::sendBadRequest(HTTPServerResponse &response)

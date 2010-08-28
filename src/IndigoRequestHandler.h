@@ -23,9 +23,10 @@ private:
 	void sendVirtualRootDirectory(HTTPServerResponse &response);
 	void sendDirectory(HTTPServerResponse &response, const string &path, const string &dirURI);
 	void redirectToDirectory(HTTPServerResponse &response, const string &dirURI, bool permanent);
-	bool isGoodRequest(const HTTPServerRequest &request, bool *loggable, Path *uriPath);
 	void logRequest(const HTTPServerRequest &request, bool loggable);
 	void sendError(HTTPServerResponse &response, int code);
+	void sendMethodNotAllowed(HTTPServerResponse &response);
+	void sendRequestURITooLong(HTTPServerResponse &response);
 	void sendBadRequest(HTTPServerResponse &response);
 	void sendNotImplemented(HTTPServerResponse &response);
 	void sendNotFound(HTTPServerResponse &response);
