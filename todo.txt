@@ -1,8 +1,10 @@
 0.5:
+80 columns in installed text files
 mime types
 decode special characters in URL
-check request parsing and processing
 SVN portable newlines
+check URI contents (path only?)
+check request parsing and processing
 test send/recv timeout
 check licensing
 other files? (INSTALL)

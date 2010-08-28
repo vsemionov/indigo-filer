@@ -9,7 +9,7 @@ path. Shared objects do not need to exist on the filesystem - in that case they
 do not appear in listings, and requests for them result in error responses.
 Shares are specified as settings in the [VirtualRoot] section in the
 configuration file with the following format:
-<share-name> = <share-path>.
+<share-name> = <share-path>
 Share names may not contain the '/' character.
 NOTE: If Server.root is set to a filesystem path, the root directory listing
 will contain entries of the real root, but requests with an URI other than "/"
@@ -19,10 +19,12 @@ that match a share name will be served from the matching share.
 KNOWN ISSUES
 
 * A limitation in the POCO library prevents idle threads from being signaled to
-terminate if a high connection rate suddenly drops to zero. To work around
-this, you can use the Server.collectIdleThreads option. This is safe and works
-in most cases, but is disabled by default, because it uses undocumented
-behavior. Try enabling this option if the process often has a large number of
-threads when new connections are not arriving. Even when this options is
-enabled, idle threads will be signaled to terminate only when there are no
-requests currently processed.
+terminate if a high connection rate suddenly drops to zero. This may happen on
+a lightly loaded server after a short burst of requests. Normally, this should
+not be a problem, because this is only a temporary condition and the idle
+threads are terminated when new connections arrive. Also, the idle threads do
+not consume CPU time or large amounts of memory. To work around this, you can
+use the Server.collectIdleThreads option by setting it to "yes". This is safe
+and works in most cases, but is disabled by default, because it uses
+undocumented behavior. Try enabling this option if the process often has a
+large number of threads when new connections are not arriving.
