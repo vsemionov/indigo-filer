@@ -31,7 +31,7 @@
 
 #define APP_NAME "Indigo Filer"
 #define APP_NAME_SHORT "IndigoFiler"
-#define APP_VERSION "0.1"
+#define APP_VERSION "0.5-pre"
 
 #define APP_COPYRIGHT_NOTICE \
 	"Copyright (C) 2010, Victor Semionov" "\n" \
