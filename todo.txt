@@ -1,4 +1,6 @@
 0.5:
+error if ini file does not exist
+Server.name defaults to hostname
 logged host incorrect
 mime types
 support directory index
