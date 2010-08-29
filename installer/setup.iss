@@ -33,7 +33,6 @@
 AppId={{21EEE893-9E2A-474C-AF0C-8863E493B211}
 AppName=Indigo Filer
 AppVersion=0.5-pre
-;AppVerName=Indigo Filer 0.5-pre
 AppPublisher=Victor Semionov
 AppPublisherURL=http://www.vsemionov.org/
 AppSupportURL=http://www.vsemionov.org/indigo-filer/
