@@ -1,8 +1,10 @@
 0.5:
 logged host incorrect
+rename settingName to SettingName
+mime types
+support directory index
 support transfer encoding
 check other request fields - version, contentLength, expectContinue, ...
-mime types
 decode special characters in URL
 SVN portable newlines
 check URI contents (path only?)
