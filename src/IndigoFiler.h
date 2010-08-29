@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2010, Victor Semionov
+ * Copyright (C) 2010, Victor Semionov
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,11 @@
 #define INDIGOFILER_H
 
 #define APP_NAME "Indigo Filer"
-#define APP_NAME_WORD "IndigoFiler"
+#define APP_NAME_SHORT "IndigoFiler"
 #define APP_VERSION "0.1"
+
+#define APP_COPYRIGHT_NOTICE \
+	"Copyright (C) 2010, Victor Semionov" "\n" \
+	"All rights reserved." "\n"
 
 #endif //INDIGOFILER_H

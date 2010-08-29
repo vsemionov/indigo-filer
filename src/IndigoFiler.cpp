@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2010, Victor Semionov
+ * Copyright (C) 2010, Victor Semionov
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -86,7 +86,7 @@ private:
 class IndigoFiler: public ServerApplication
 {
 public:
-	IndigoFiler(): helpRequested(false)
+	IndigoFiler(): helpRequested(false), versionRequested(false)
 	{
 	}
 
@@ -105,8 +105,14 @@ protected:
 	void defineOptions(OptionSet &options)
 	{
 		ServerApplication::defineOptions(options);
+
 		options.addOption(
 			Option("help", "h", "display help information on command line arguments")
+				.required(false)
+				.repeatable(false));
+
+		options.addOption(
+			Option("version", "v", "display version information")
 				.required(false)
 				.repeatable(false));
 	}
@@ -117,6 +123,8 @@ protected:
 
 		if (name == "help")
 			helpRequested = true;
+		else if (name == "version")
+			versionRequested = true;
 	}
 
 	void displayHelp()
@@ -126,6 +134,12 @@ protected:
 		helpFormatter.setUsage("OPTIONS");
 		helpFormatter.setHeader("A simple web server for static content.");
 		helpFormatter.format(cout);
+	}
+
+	void displayVersion()
+	{
+		cout << APP_NAME " " APP_VERSION << endl;
+		cout << APP_COPYRIGHT_NOTICE;
 	}
 
 	map<string, string> readShares()
@@ -166,6 +180,10 @@ protected:
 		{
 			displayHelp();
 		}
+		else if (versionRequested)
+		{
+			displayVersion();
+		}
 		else
 		{
 			const string serverSection = "Server";
@@ -195,7 +213,7 @@ protected:
 			params->setMaxThreads(configuration.getMaxThreads());
 			params->setMaxQueued(configuration.getMaxQueued());
 			params->setServerName(configuration.getServerName());
-			params->setSoftwareVersion(APP_NAME_WORD "/" APP_VERSION);
+			params->setSoftwareVersion(APP_NAME_SHORT "/" APP_VERSION);
 
 			HTTPRequestHandlerFactory::Ptr factory = new IndigoRequestHandlerFactory();
 
@@ -231,6 +249,7 @@ protected:
 
 private:
 	bool helpRequested;
+	bool versionRequested;
 };
 
 int main(int argc, char **argv)

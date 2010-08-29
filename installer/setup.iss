@@ -1,6 +1,6 @@
 
 ;
-; Copyright (c) 2010, Victor Semionov
+; Copyright (C) 2010, Victor Semionov
 ; All rights reserved.
 ;
 ; Redistribution and use in source and binary forms, with or without
