@@ -125,7 +125,7 @@ protected:
 		helpFormatter.setCommand(commandName());
 		helpFormatter.setUsage("OPTIONS");
 		helpFormatter.setHeader("A simple web server for static content.");
-		helpFormatter.format(cerr);
+		helpFormatter.format(cout);
 	}
 
 	map<string, string> readShares()

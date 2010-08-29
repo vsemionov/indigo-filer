@@ -3,7 +3,6 @@ logged host incorrect
 rename settingName to SettingName
 mime types
 add -v option
-help output to cout?
 support directory index
 support transfer encoding
 check other request fields - version, contentLength, expectContinue, ...
