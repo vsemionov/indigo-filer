@@ -131,7 +131,7 @@ protected:
 	{
 		HelpFormatter helpFormatter(options());
 		helpFormatter.setCommand(commandName());
-		helpFormatter.setUsage("OPTIONS");
+		helpFormatter.setUsage("[options]");
 		helpFormatter.setHeader("A simple web server for static content.");
 		helpFormatter.format(cout);
 	}
