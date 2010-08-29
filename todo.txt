@@ -1,5 +1,4 @@
 0.5:
-correct URLs in installer
 logged host incorrect
 rename settingName to SettingName
 mime types
