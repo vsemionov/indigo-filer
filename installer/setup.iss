@@ -57,6 +57,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "..\build\indigo-filer.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\misc\mime.types"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\misc\mime.types.user"; DestDir: "{app}"; Flags: onlyifdoesntexist
 Source: "..\src\indigo-filer.ini"; DestDir: "{app}"; Flags: onlyifdoesntexist
 Source: "..\src\indigo-filer.ini"; DestDir: "{app}"; DestName: "indigo-filer-defaults.ini"; Flags: ignoreversion
 Source: "..\LICENSE"; DestDir: "{app}"; DestName: "LICENSE.txt"; Flags: ignoreversion
