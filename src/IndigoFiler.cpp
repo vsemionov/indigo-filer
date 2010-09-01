@@ -30,8 +30,6 @@
 #include <vector>
 #include <map>
 #include <iostream>
-#include <sstream>
-#include <memory>
 
 #include "Poco/Util/ServerApplication.h"
 #include "Poco/Net/HTTPServer.h"
@@ -182,13 +180,12 @@ protected:
 			SocketAddress saddr(configuration.getAddress(), configuration.getPort());
 			ServerSocket sock(saddr, configuration.getBacklog());
 
-			auto_ptr<ThreadPoolCollector> collector(NULL);
-			auto_ptr<Thread> collectorThread(NULL);
+			ThreadPoolCollector collector(pool);
+			Thread collectorThread;
+
 			if (configuration.getCollectIdleThreads())
 			{
-				collector.reset(new ThreadPoolCollector(pool));
-				collectorThread.reset(new Thread());
-				collectorThread->start(*collector);
+				collectorThread.start(collector);
 			}
 
 			HTTPServer srv(factory, pool, sock, params);
@@ -197,10 +194,10 @@ protected:
 			waitForTerminationRequest();
 			srv.stop();
 
-			if (collectorThread.get())
+			if (collectorThread.isRunning())
 			{
-				collector->stopCollecting();
-				collectorThread->join();
+				collector.stopCollecting();
+				collectorThread.join();
 			}
 		}
 
