@@ -35,6 +35,10 @@
 
 #include "Poco/Util/ServerApplication.h"
 #include "Poco/Net/HTTPServer.h"
+#include "Poco/String.h"
+#include "Poco/FileStream.h"
+#include "Poco/LineEndingConverter.h"
+#include "Poco/StringTokenizer.h"
 #include "Poco/Util/HelpFormatter.h"
 
 #include "IndigoFiler.h"
@@ -94,7 +98,9 @@ protected:
 	void initialize(Application &self)
 	{
 		ServerApplication::initialize(self);
-		loadConfiguration();
+
+		string configPath = locateConfiguration(APP_NAME_UNIX "." "ini");
+		loadConfiguration(configPath);
 	}
 
 	void uninitialize()
@@ -127,53 +133,6 @@ protected:
 			versionRequested = true;
 	}
 
-	void displayHelp()
-	{
-		HelpFormatter helpFormatter(options());
-		helpFormatter.setCommand(commandName());
-		helpFormatter.setUsage("[options]");
-		helpFormatter.setHeader("A simple web server for static content.");
-		helpFormatter.format(cout);
-	}
-
-	void displayVersion()
-	{
-		cout << APP_NAME " " APP_VERSION << endl;
-		cout << APP_COPYRIGHT_NOTICE;
-	}
-
-	map<string, string> readShares()
-	{
-		const string sharesSection = "VirtualRoot";
-
-		map<string, string> shares;
-
-		AbstractConfiguration::Keys keys;
-		config().keys(sharesSection, keys);
-
-		for (size_t i = 0; i < keys.size(); i++)
-		{
-			const string &shareName = keys[i];
-			if (shareName.empty())
-				continue;
-
-			const string &sharePath = config().getString(sharesSection + "." + shareName, "");
-			if (sharePath.empty())
-				continue;
-
-			shares[shareName] = sharePath;
-		}
-
-		return shares;
-	}
-
-	map<string, string> readMimeTypes()
-	{
-		map<string, string> mimeTypes;
-		// left blank for now
-		return mimeTypes;
-	}
-
 	int main(const vector<string> &args)
 	{
 		if (helpRequested)
@@ -188,7 +147,8 @@ protected:
 		{
 			const string serverSection = "Server";
 
-			bool collectIdleThreads = (config().getString(serverSection + "." + "collectIdleThreads", "no") == "yes");
+			string collect = config().getString(serverSection + "." + "collectIdleThreads", "no");
+			bool collectIdleThreads = (toLower(collect) == "yes");
 
 			string root = config().getString(serverSection + "." + "root", "virtual");
 			if (root == "virtual")
@@ -248,6 +208,90 @@ protected:
 	}
 
 private:
+	void displayHelp()
+	{
+		HelpFormatter helpFormatter(options());
+		helpFormatter.setCommand(commandName());
+		helpFormatter.setUsage("[options]");
+		helpFormatter.setHeader("A simple web server for static content.");
+		helpFormatter.format(cout);
+	}
+
+	void displayVersion()
+	{
+		cout << APP_NAME " " APP_VERSION << endl;
+		cout << APP_COPYRIGHT_NOTICE;
+	}
+
+	map<string, string> readShares()
+	{
+		const string sharesSection = "VirtualRoot";
+
+		map<string, string> shares;
+
+		AbstractConfiguration::Keys keys;
+		config().keys(sharesSection, keys);
+
+		for (size_t i = 0; i < keys.size(); i++)
+		{
+			const string &shareName = keys[i];
+			if (shareName.empty())
+				continue;
+
+			const string &sharePath = config().getString(sharesSection + "." + shareName, "");
+			if (sharePath.empty())
+				continue;
+
+			shares[shareName] = sharePath;
+		}
+
+		return shares;
+	}
+
+	void readMimeTypes(string filename, map<string, string> *mimeTypes)
+	{
+		string filepath = locateConfiguration(filename);
+
+		FileInputStream fin(filepath);
+		InputLineEndingConverter in(fin, LineEnding::NEWLINE_LF);
+
+		string line;
+		while (getline(in, line))
+		{
+			line = line.substr(0, line.find('#'));
+
+			StringTokenizer tok(line, " \t", StringTokenizer::TOK_IGNORE_EMPTY);
+			const int cnt = tok.count();
+			if (cnt >= 2)
+			{
+				const string &type = tok[0];
+
+				for (int i = 1; i < cnt; i++)
+				{
+					const string &ext = tok[i];
+					(*mimeTypes)[ext] = type;
+				}
+			}
+		}
+	}
+
+	map<string, string> readMimeTypes()
+	{
+		map<string, string> mimeTypes;
+		readMimeTypes("mime.types", &mimeTypes);
+		readMimeTypes("mime.types.extra", &mimeTypes);
+		readMimeTypes("mime.types.user", &mimeTypes);
+		return mimeTypes;
+	}
+
+	string locateConfiguration(const string &filename)
+	{
+		string dir = config().getString("application.dir");
+		Path path(dir);
+		path.makeDirectory().setFileName(filename);
+		return path.toString();
+	}
+
 	bool helpRequested;
 	bool versionRequested;
 };

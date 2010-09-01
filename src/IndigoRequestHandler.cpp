@@ -32,11 +32,11 @@
 #include <vector>
 #include <set>
 #include <ostream>
-#include <sstream>
 
 #include "Poco/Util/ServerApplication.h"
 #include "Poco/File.h"
 #include "Poco/DirectoryIterator.h"
+#include "Poco/NumberFormatter.h"
 
 #include "IndigoRequestHandler.h"
 #include "IndigoConfiguration.h"
@@ -346,12 +346,9 @@ void IndigoRequestHandler::sendError(HTTPServerResponse &response, int code)
 
 	const string &reason = response.getReason();
 
-	ostringstream ostr;
-	ostr << code;
-
 	ostream &out = response.send();
 	out << "<html>";
-	out << "<head><title>" + ostr.str() + " " + reason + "</title></head>";
+	out << "<head><title>" + NumberFormatter::format(code) + " " + reason + "</title></head>";
 	out << "<body><h1>" + reason + "</h1></body>";
 	out << "</html>";
 }

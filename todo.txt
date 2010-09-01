@@ -1,8 +1,6 @@
 0.5:
-error if ini file does not exist
 Server.name defaults to hostname
 logged host incorrect
-mime types
 support directory index
 support transfer encoding
 check other request fields - version, contentLength, expectContinue, ...
@@ -11,7 +9,6 @@ SVN portable newlines
 check URI contents (path only?)
 check request parsing and processing
 test send/recv timeout
-check licensing
 other files? (INSTALL)
 decide on and correct versioning
 sourceforge files

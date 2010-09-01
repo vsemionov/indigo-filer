@@ -31,6 +31,7 @@
 
 #define APP_NAME "Indigo Filer"
 #define APP_NAME_SHORT "IndigoFiler"
+#define APP_NAME_UNIX "indigo-filer"
 #define APP_VERSION "0.5-pre"
 
 #define APP_COPYRIGHT_NOTICE \
