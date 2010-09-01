@@ -278,9 +278,11 @@ private:
 	map<string, string> readMimeTypes()
 	{
 		map<string, string> mimeTypes;
+
 		readMimeTypes("mime.types", &mimeTypes);
 		readMimeTypes("mime.types.extra", &mimeTypes);
 		readMimeTypes("mime.types.user", &mimeTypes);
+
 		return mimeTypes;
 	}
 
