@@ -1,12 +1,10 @@
 0.5:
 is maxQueued necessary?
 Server.name defaults to hostname
-logged host incorrect
 support directory index
 support transfer encoding
 check other request fields - version, contentLength, expectContinue, ...
 decode special characters in URL
-SVN portable newlines
 check URI contents (path only?)
 check request parsing and processing
 test send/recv timeout
