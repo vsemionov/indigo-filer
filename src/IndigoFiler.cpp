@@ -33,11 +33,13 @@
 
 #include "Poco/Util/ServerApplication.h"
 #include "Poco/Net/HTTPServer.h"
+#include "Poco/Util/HelpFormatter.h"
+#include "Poco/Net/DNS.h"
 #include "Poco/String.h"
 #include "Poco/FileStream.h"
 #include "Poco/LineEndingConverter.h"
 #include "Poco/StringTokenizer.h"
-#include "Poco/Util/HelpFormatter.h"
+#include "Poco/URI.h"
 
 #include "IndigoFiler.h"
 #include "IndigoConfiguration.h"
@@ -119,23 +121,27 @@ protected:
 		{
 			const string serverSection = "Server";
 
-			string collect = config().getString(serverSection + "." + "collectIdleThreads", "no");
-			bool collectIdleThreads = (toLower(collect) == "yes");
+			string serverName = config().getString(serverSection + "." + "name", "");
+			if (serverName.empty())
+				serverName = DNS::hostName();
 
 			string root = config().getString(serverSection + "." + "root", "virtual");
 			if (root == "virtual")
 				root = "";
 
+			string index = config().getString(serverSection + "." + "index", "index.html");
+
 			const IndigoConfiguration &configuration = IndigoConfiguration::init(
-				config().getString(serverSection + "." + "name", ""),
+				serverName,
 				config().getString(serverSection + "." + "address", "0.0.0.0"),
 				config().getInt(serverSection + "." + "port", 80),
 				config().getInt(serverSection + "." + "backlog", 64),
 				config().getInt(serverSection + "." + "minThreads", 2),
 				config().getInt(serverSection + "." + "maxThreads", 16),
 				config().getInt(serverSection + "." + "maxQueued", 64),
-				collectIdleThreads,
+				config().getBool(serverSection + "." + "collectIdleThreads", false),
 				root,
+				readIndexes(index),
 				readShares(),
 				readMimeTypes()
 				);
@@ -189,6 +195,24 @@ private:
 		cout << APP_COPYRIGHT_NOTICE;
 	}
 
+	set<string> readIndexes(const string &index)
+	{
+		set<string> indexes;
+
+		StringTokenizer tok(index, " \t", StringTokenizer::TOK_IGNORE_EMPTY);
+		int cnt = tok.count();
+		for (int i = 0; i < cnt; i++)
+		{
+			string idx;
+			URI::decode(tok[i], idx);
+			poco_assert(idx.empty() == false);
+
+			indexes.insert(idx);
+		}
+
+		return indexes;
+	}
+
 	map<string, string> readShares()
 	{
 		const string sharesSection = "VirtualRoot";
@@ -231,10 +255,13 @@ private:
 			if (cnt >= 2)
 			{
 				const string &type = tok[0];
+				poco_assert(type.empty() == false);
 
 				for (int i = 1; i < cnt; i++)
 				{
 					const string &ext = tok[i];
+					poco_assert(ext.empty() == false);
+
 					mimeTypes[ext] = type;
 				}
 			}

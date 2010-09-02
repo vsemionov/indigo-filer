@@ -49,6 +49,7 @@ public:
 		int maxQueued,
 		bool collectIdleThreads,
 		const string &root,
+		const set<string> &indexes,
 		const map<string, string> &shares,
 		const map<string, string> &mimeTypes
 		);
@@ -65,6 +66,7 @@ public:
 	int getMaxQueued() const;
 	bool getCollectIdleThreads() const;
 	const string &getRoot() const;
+	const set<string> &getIndexes() const;
 	const set<string> &getShares() const;
 	const string &getSharePath(const string &share) const;
 	const string &getMimeType(const string &extension) const;
@@ -80,6 +82,7 @@ private:
 		int maxQueued,
 		bool collectIdleThreads,
 		const string &root,
+		const set<string> &indexes,
 		const map<string, string> &shares,
 		const map<string, string> &mimeTypes
 		);
@@ -95,6 +98,7 @@ private:
 	const int maxQueued;
 	const bool collectIdleThreads;
 	const string root;
+	const set<string> indexes;
 	const map<string, string> shares;
 	const map<string, string> mimeTypes;
 
