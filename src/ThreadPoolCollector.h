@@ -45,10 +45,10 @@ public:
 	void stopCollecting();
 
 private:
-	class ThreadPoolCollectorRunnable: public Runnable
+	class CollectorRunnable: public Runnable
 	{
 	public:
-		ThreadPoolCollectorRunnable(ThreadPool &pool);
+		CollectorRunnable(ThreadPool &pool);
 
 		void run();
 		void stopCollecting();
@@ -58,7 +58,7 @@ private:
 		Event stopCollection;
 	};
 
-	ThreadPoolCollectorRunnable runnable;
+	CollectorRunnable runnable;
 };
 
 #endif //THREADPOOLCOLLECTOR_H

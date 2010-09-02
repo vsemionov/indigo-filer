@@ -28,13 +28,13 @@
 
 #include "ThreadPoolCollector.h"
 
-ThreadPoolCollector::ThreadPoolCollectorRunnable::ThreadPoolCollectorRunnable(ThreadPool &pool):
+ThreadPoolCollector::CollectorRunnable::CollectorRunnable(ThreadPool &pool):
 	pool(pool),
 	stopCollection()
 {
 }
 
-void ThreadPoolCollector::ThreadPoolCollectorRunnable::run()
+void ThreadPoolCollector::CollectorRunnable::run()
 {
 	while (!stopCollection.tryWait(1000))
 	{
@@ -42,7 +42,7 @@ void ThreadPoolCollector::ThreadPoolCollectorRunnable::run()
 	}
 }
 
-void ThreadPoolCollector::ThreadPoolCollectorRunnable::stopCollecting()
+void ThreadPoolCollector::CollectorRunnable::stopCollecting()
 {
 	stopCollection.set();
 }
