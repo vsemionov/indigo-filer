@@ -52,7 +52,7 @@ private:
 	void sendVirtualRootDirectory(HTTPServerResponse &response);
 	void sendDirectory(HTTPServerResponse &response, const string &path, const string &dirURI);
 	void redirectToDirectory(HTTPServerResponse &response, const string &dirURI, bool permanent);
-	void logRequest(const HTTPServerRequest &request, bool loggable);
+	void logRequest(const HTTPServerRequest &request);
 	void sendError(HTTPServerResponse &response, int code);
 	void sendMethodNotAllowed(HTTPServerResponse &response);
 	void sendRequestURITooLong(HTTPServerResponse &response);

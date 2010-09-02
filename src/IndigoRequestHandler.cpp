@@ -32,8 +32,10 @@
 #include <vector>
 #include <set>
 #include <ostream>
+#include <iostream>
 
 #include "Poco/Util/ServerApplication.h"
+#include "Poco/URI.h"
 #include "Poco/File.h"
 #include "Poco/DirectoryIterator.h"
 #include "Poco/NumberFormatter.h"
@@ -56,48 +58,26 @@ IndigoRequestHandler::IndigoRequestHandler()
 
 void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerResponse &response)
 {
-	const IndigoConfiguration &configuration = IndigoConfiguration::get();
+	logRequest(request);
 
 	const string &method = request.getMethod();
-	const string &uri = request.getURI();
-
-	Path uriPath;
-
-	bool process = true;
-	bool loggable = true;
 
 	if (method != HTTPRequest::HTTP_GET)
 	{
-		process = false;
-		if (method.length() > 32)
-			loggable = false;
 		sendMethodNotAllowed(response);
-	}
-
-	if (uri.length() > 256)
-	{
-		loggable = false;
-		if (uri.length() > 4096)
-		{
-			process = false;
-			sendRequestURITooLong(response);
-		}
-	}
-
-	if (process)
-	{
-		uriPath.assign(uri, Path::PATH_UNIX);
-		if (!uriPath.isAbsolute())
-		{
-			process = false;
-			sendBadRequest(response);
-		}
-	}
-
-	logRequest(request, loggable);
-
-	if (!process)
 		return;
+	}
+
+	const string &uri = request.getURI();
+	Path uriPath(URI(uri).getPath(), Path::PATH_UNIX);
+
+	if (!uriPath.isAbsolute())
+	{
+		sendBadRequest(response);
+		return;
+	}
+
+	const IndigoConfiguration &configuration = IndigoConfiguration::get();
 
 	if (uriPath.isDirectory() && uriPath.depth() == 0)
 	{
@@ -316,7 +296,7 @@ void IndigoRequestHandler::redirectToDirectory(HTTPServerResponse &response, con
 	}
 }
 
-void IndigoRequestHandler::logRequest(const HTTPServerRequest &request, bool loggable)
+void IndigoRequestHandler::logRequest(const HTTPServerRequest &request)
 {
 	const ServerApplication &app = dynamic_cast<ServerApplication &>(Application::instance());
 	if (app.isInteractive())
@@ -325,11 +305,7 @@ void IndigoRequestHandler::logRequest(const HTTPServerRequest &request, bool log
 		const string &uri = request.getURI();
 		const string &host = request.clientAddress().host().toString();
 
-		string logString;
-		if (loggable)
-			logString = host + " - " + method + " " + uri;
-		else
-			logString = "Request from " + host;
+		string logString = host + " - " + method + " " + uri;
 
 		app.logger().information(logString);
 	}
