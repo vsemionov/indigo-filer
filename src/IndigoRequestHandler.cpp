@@ -190,6 +190,10 @@ void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, co
 {
 	bool root = (dirURI == "/");
 
+	response.setContentType("text/html");
+	response.setContentLength(HTTPResponse::UNKNOWN_CONTENT_LENGTH);
+	response.setChunkedTransferEncoding(true);
+
 	ostream &out = response.send();
 
 	out << "<html>" << endl;
