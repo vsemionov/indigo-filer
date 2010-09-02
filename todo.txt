@@ -4,7 +4,7 @@ Server.name defaults to hostname
 support directory index
 support transfer encoding
 check other request fields - version, contentLength, expectContinue, ...
-decode special characters in URL
+percent-decode URI
 check URI contents (path only?)
 check request parsing and processing
 test send/recv timeout
