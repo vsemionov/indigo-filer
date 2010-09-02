@@ -95,7 +95,7 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 		{
 			if (configuration.virtualRoot())
 			{
-				sendVirtualRootDirectoryIndex(response);
+				sendVirtualIndex(response);
 				return;
 			}
 		}
@@ -119,9 +119,7 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 		}
 		else
 		{
-			const string &ext = fsPath.getExtension();
-			const string &mediaType = configuration.getMimeType(ext);
-			response.sendFile(target, mediaType);
+			sendFile(response, target);
 		}
 	}
 	catch (ShareNotFoundException &snfe)
@@ -186,6 +184,13 @@ Path IndigoRequestHandler::resolveFSPath(const Path &uriPath)
 	return fsPath;
 }
 
+void IndigoRequestHandler::sendFile(HTTPServerResponse &response, const string &path)
+{
+	const string &ext = Path(path).getExtension();
+	const string &mediaType = IndigoConfiguration::get().getMimeType(ext);
+	response.sendFile(path, mediaType);
+}
+
 void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, const string &dirURI, const vector<string> &entries)
 {
 	bool root = (dirURI == "/");
@@ -222,9 +227,49 @@ void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, co
 	out << "</html>" << endl;
 }
 
-void IndigoRequestHandler::sendVirtualRootDirectoryIndex(HTTPServerResponse &response)
+string IndigoRequestHandler::findVirtualIndex()
 {
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
+
+	const set<string> indexes = configuration.getIndexes();
+
+	set<string>::const_iterator it;
+	set<string>::const_iterator end = indexes.end();
+	for (it = indexes.begin(); it != end; ++it)
+	{
+		try
+		{
+			const Path &index = resolveFSPath(Path("/" + *it, Path::PATH_UNIX));
+			File f(index);
+			if (!f.isDirectory())
+			{
+				return index.toString();
+			}
+		}
+		catch (ShareNotFoundException &snfe)
+		{
+		}
+		catch (FileException &fe)
+		{
+		}
+		catch (PathSyntaxException &pse)
+		{
+		}
+	}
+
+	return "";
+}
+
+void IndigoRequestHandler::sendVirtualIndex(HTTPServerResponse &response)
+{
+	const IndigoConfiguration &configuration = IndigoConfiguration::get();
+
+	const string &index = findVirtualIndex();
+	if (!index.empty())
+	{
+		sendFile(response, index);
+		return;
+	}
 
 	if (!configuration.getAutoIndex())
 		throw ShareNotFoundException();
@@ -265,9 +310,46 @@ void IndigoRequestHandler::sendVirtualRootDirectoryIndex(HTTPServerResponse &res
 	sendDirectoryListing(response, "/", entries);
 }
 
+string IndigoRequestHandler::findDirectoryIndex(const string &base)
+{
+	const IndigoConfiguration &configuration = IndigoConfiguration::get();
+
+	const set<string> indexes = configuration.getIndexes(true);
+
+	set<string>::const_iterator it;
+	set<string>::const_iterator end = indexes.end();
+	for (it = indexes.begin(); it != end; ++it)
+	{
+		try
+		{
+			const string &index = base + Path::separator() + *it;
+			File f(index);
+			if (!f.isDirectory())
+			{
+				return index;
+			}
+		}
+		catch (FileException &fe)
+		{
+		}
+		catch (PathSyntaxException &pse)
+		{
+		}
+	}
+
+	return "";
+}
+
 void IndigoRequestHandler::sendDirectoryIndex(HTTPServerResponse &response, const string &path, const string &dirURI)
 {
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
+
+	const string &index = findDirectoryIndex(path);
+	if (!index.empty())
+	{
+		sendFile(response, index);
+		return;
+	}
 
 	if (!configuration.getAutoIndex())
 		throw FileNotFoundException();

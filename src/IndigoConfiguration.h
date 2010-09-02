@@ -67,12 +67,11 @@ public:
 	int getMaxQueued() const;
 	bool getCollectIdleThreads() const;
 	const string &getRoot() const;
-	const set<string> &getIndexes() const;
+	const set<string> &getIndexes(bool native = false) const;
 	bool getAutoIndex() const;
 	const set<string> &getShares() const;
 	const string &getSharePath(const string &share) const;
 	const string &getMimeType(const string &extension) const;
-
 	bool virtualRoot() const;
 
 private:
@@ -104,6 +103,7 @@ private:
 	const bool collectIdleThreads;
 	const string root;
 	const set<string> indexes;
+	set<string> indexesNative;
 	const bool autoIndex;
 	const map<string, string> shares;
 	const map<string, string> mimeTypes;

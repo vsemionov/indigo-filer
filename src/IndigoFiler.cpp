@@ -40,6 +40,7 @@
 #include "Poco/LineEndingConverter.h"
 #include "Poco/StringTokenizer.h"
 #include "Poco/URI.h"
+#include "Poco/Path.h"
 
 #include "IndigoFiler.h"
 #include "IndigoConfiguration.h"
@@ -233,7 +234,9 @@ private:
 			if (sharePath.empty())
 				continue;
 
-			shares[shareName] = sharePath;
+			string decodedShareName;
+			URI::decode(shareName, decodedShareName);
+			shares[decodedShareName] = sharePath;
 		}
 
 		return shares;

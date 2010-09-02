@@ -48,8 +48,11 @@ public:
 
 private:
 	Path resolveFSPath(const Path &uriPath);
+	void sendFile(HTTPServerResponse &response, const string &path);
 	void sendDirectoryListing(HTTPServerResponse &response, const string &dirURI, const vector<string> &entries);
-	void sendVirtualRootDirectoryIndex(HTTPServerResponse &response);
+	string findVirtualIndex();
+	void sendVirtualIndex(HTTPServerResponse &response);
+	string findDirectoryIndex(const string &base);
 	void sendDirectoryIndex(HTTPServerResponse &response, const string &path, const string &dirURI);
 	void redirectToDirectory(HTTPServerResponse &response, const string &dirURI, bool permanent);
 	void logRequest(const HTTPServerRequest &request);

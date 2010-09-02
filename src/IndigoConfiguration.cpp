@@ -33,6 +33,7 @@
 
 #include <Poco/Path.h>
 #include <Poco/Exception.h>
+#include <Poco/String.h>
 
 #include "IndigoConfiguration.h"
 
@@ -114,15 +115,28 @@ IndigoConfiguration::IndigoConfiguration(
 		collectIdleThreads(collectIdleThreads),
 		root(root),
 		indexes(indexes),
+		indexesNative(),
 		autoIndex(autoIndex),
 		shares(shares),
 		mimeTypes(mimeTypes),
 		sharesSet()
 {
-	map<string, string>::const_iterator it;
-	for (it = shares.begin(); it != shares.end(); ++it)
 	{
-		sharesSet.insert(it->first);
+		map<string, string>::const_iterator it;
+		for (it = shares.begin(); it != shares.end(); ++it)
+		{
+			sharesSet.insert(it->first);
+		}
+	}
+
+	{
+		set<string>::const_iterator it;
+		for (it = indexes.begin(); it != indexes.end(); ++it)
+		{
+			string index = *it;
+			replaceInPlace(index, string("/"), string(1, Path::separator()));
+			indexesNative.insert(index);
+		}
 	}
 }
 
@@ -189,9 +203,12 @@ const string &IndigoConfiguration::getRoot() const
 	return root;
 }
 
-const set<string> &IndigoConfiguration::getIndexes() const
+const set<string> &IndigoConfiguration::getIndexes(bool native) const
 {
-	return indexes;
+	if (!native)
+		return indexes;
+	else
+		return indexesNative;
 }
 
 bool IndigoConfiguration::getAutoIndex() const
