@@ -1,6 +1,7 @@
 0.5:
 is maxQueued necessary?
 support directory index
+virtual root dir index
 auto indexes can be disabled
 test send/recv timeout
 decide on and correct versioning
