@@ -93,7 +93,7 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 	{
 		if (configuration.getRoot().empty())
 		{
-			sendVirtualRootDirectory(response);
+			sendVirtualRootDirectoryIndex(response);
 			return;
 		}
 	}
@@ -108,7 +108,7 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 		{
 			if (uriPath.isDirectory())
 			{
-				sendDirectory(response, target, uriPath.toString(Path::PATH_UNIX));
+				sendDirectoryIndex(response, target, uriPath.toString(Path::PATH_UNIX));
 			}
 			else
 			{
@@ -222,7 +222,7 @@ void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, co
 	out << "</html>" << endl;
 }
 
-void IndigoRequestHandler::sendVirtualRootDirectory(HTTPServerResponse &response)
+void IndigoRequestHandler::sendVirtualRootDirectoryIndex(HTTPServerResponse &response)
 {
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
 	const set<string> &shares = configuration.getShares();
@@ -262,7 +262,7 @@ void IndigoRequestHandler::sendVirtualRootDirectory(HTTPServerResponse &response
 	sendDirectoryListing(response, "/", entries);
 }
 
-void IndigoRequestHandler::sendDirectory(HTTPServerResponse &response, const string &path, const string &dirURI)
+void IndigoRequestHandler::sendDirectoryIndex(HTTPServerResponse &response, const string &path, const string &dirURI)
 {
 	vector<string> entries;
 
