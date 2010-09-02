@@ -3,11 +3,11 @@ is maxQueued necessary?
 Server.name defaults to hostname
 support directory index
 test send/recv timeout
-other files? (INSTALL)
 decide on and correct versioning
 sourceforge files
 
 0.9:
+installation instructions
 unix support
 handle symlinks
 better logging
