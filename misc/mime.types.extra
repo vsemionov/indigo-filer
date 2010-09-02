@@ -1,0 +1,4 @@
+# Extra mime types, not defined/enabled in mime.types
+#
+application/x-compress		Z
+application/x-gzip			gz tgz
