@@ -322,7 +322,11 @@ string IndigoRequestHandler::findDirectoryIndex(const string &base)
 	{
 		try
 		{
-			const string &index = base + Path::separator() + *it;
+			string index = base;
+			if (index[index.length() - 1] != Path::separator())
+				index += Path::separator();
+			index += *it;
+
 			File f(index);
 			if (!f.isDirectory())
 			{
