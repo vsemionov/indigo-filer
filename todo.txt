@@ -1,5 +1,6 @@
 0.5:
 trim leading and trailing '/' in share names
+percent-encoded share name ".." appears in listing
 percent-decode share paths?
 test send/recv timeout
 decide on and correct versioning
