@@ -26,41 +26,39 @@
  * DAMAGE.
  */
 
-#ifndef INDIGOREQUESTHANDLER_H
-#define INDIGOREQUESTHANDLER_H
+#ifndef THREADPOOLCOLLECTOR_H
+#define THREADPOOLCOLLECTOR_H
 
-#include "Poco/Net/HTTPRequestHandler.h"
-#include "Poco/Net/HTTPServerRequest.h"
-#include "Poco/Net/HTTPServerResponse.h"
-#include "Poco/Path.h"
-
-using namespace std;
+#include "Poco/Thread.h"
+#include "Poco/Event.h"
+#include "Poco/ThreadPool.h"
 
 using namespace Poco;
-using namespace Poco::Net;
 
-class IndigoRequestHandler: public HTTPRequestHandler
+class ThreadPoolCollector: public Thread
 {
 public:
-	IndigoRequestHandler();
+	ThreadPoolCollector(ThreadPool &pool);
+	~ThreadPoolCollector();
 
-	void handleRequest(HTTPServerRequest &request, HTTPServerResponse &response);
+	void startCollecting();
+	void stopCollecting();
 
 private:
-	Path resolveFSPath(const Path &uriPath);
-	void sendDirectoryListing(HTTPServerResponse &response, const string &dirURI, const vector<string> &entries);
-	void sendVirtualRootDirectory(HTTPServerResponse &response);
-	void sendDirectory(HTTPServerResponse &response, const string &path, const string &dirURI);
-	void redirectToDirectory(HTTPServerResponse &response, const string &dirURI, bool permanent);
-	void logRequest(const HTTPServerRequest &request, bool loggable);
-	void sendError(HTTPServerResponse &response, int code);
-	void sendMethodNotAllowed(HTTPServerResponse &response);
-	void sendRequestURITooLong(HTTPServerResponse &response);
-	void sendBadRequest(HTTPServerResponse &response);
-	void sendNotImplemented(HTTPServerResponse &response);
-	void sendNotFound(HTTPServerResponse &response);
-	void sendForbidden(HTTPServerResponse &response);
-	void sendInternalServerError(HTTPServerResponse &response);
+	class ThreadPoolCollectorRunnable: public Runnable
+	{
+	public:
+		ThreadPoolCollectorRunnable(ThreadPool &pool);
+
+		void run();
+		void stopCollecting();
+
+	private:
+		ThreadPool &pool;
+		Event stopCollection;
+	};
+
+	ThreadPoolCollectorRunnable runnable;
 };
 
-#endif //INDIGOREQUESTHANDLER_H
+#endif //THREADPOOLCOLLECTOR_H

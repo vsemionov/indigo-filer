@@ -42,6 +42,7 @@
 #include "IndigoFiler.h"
 #include "IndigoConfiguration.h"
 #include "IndigoRequestHandler.h"
+#include "ThreadPoolCollector.h"
 
 using namespace std;
 
@@ -56,33 +57,6 @@ public:
 	{
 		return new IndigoRequestHandler();
 	}
-};
-
-class ThreadPoolCollector: public Runnable
-{
-public:
-	ThreadPoolCollector(ThreadPool &pool):
-		pool(pool),
-		stopCollection()
-	{
-	}
-
-	void run()
-	{
-		while (!stopCollection.tryWait(1000))
-		{
-			pool.collect();
-		}
-	}
-
-	void stopCollecting()
-	{
-		stopCollection.set();
-	}
-
-private:
-	ThreadPool &pool;
-	Event stopCollection;
 };
 
 class IndigoFiler: public ServerApplication
@@ -181,24 +155,19 @@ protected:
 			ServerSocket sock(saddr, configuration.getBacklog());
 
 			ThreadPoolCollector collector(pool);
-			Thread collectorThread;
-
-			if (configuration.getCollectIdleThreads())
-			{
-				collectorThread.start(collector);
-			}
 
 			HTTPServer srv(factory, pool, sock, params);
 
+			if (configuration.getCollectIdleThreads())
+				collector.startCollecting();
+
 			srv.start();
+
 			waitForTerminationRequest();
+
 			srv.stop();
 
-			if (collectorThread.isRunning())
-			{
-				collector.stopCollecting();
-				collectorThread.join();
-			}
+			collector.stopCollecting();
 		}
 
 		return EXIT_OK;
@@ -245,7 +214,7 @@ private:
 		return shares;
 	}
 
-	void readMimeTypes(string filename, map<string, string> *mimeTypes)
+	void readMimeTypes(string filename, map<string, string> &mimeTypes)
 	{
 		string filepath = locateConfiguration(filename);
 
@@ -266,7 +235,7 @@ private:
 				for (int i = 1; i < cnt; i++)
 				{
 					const string &ext = tok[i];
-					(*mimeTypes)[ext] = type;
+					mimeTypes[ext] = type;
 				}
 			}
 		}
@@ -276,9 +245,9 @@ private:
 	{
 		map<string, string> mimeTypes;
 
-		readMimeTypes("mime.types", &mimeTypes);
-		readMimeTypes("mime.types.extra", &mimeTypes);
-		readMimeTypes("mime.types.user", &mimeTypes);
+		readMimeTypes("mime.types", mimeTypes);
+		readMimeTypes("mime.types.extra", mimeTypes);
+		readMimeTypes("mime.types.user", mimeTypes);
 
 		return mimeTypes;
 	}

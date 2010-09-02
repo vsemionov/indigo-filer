@@ -26,41 +26,46 @@
  * DAMAGE.
  */
 
-#ifndef INDIGOREQUESTHANDLER_H
-#define INDIGOREQUESTHANDLER_H
+#include "ThreadPoolCollector.h"
 
-#include "Poco/Net/HTTPRequestHandler.h"
-#include "Poco/Net/HTTPServerRequest.h"
-#include "Poco/Net/HTTPServerResponse.h"
-#include "Poco/Path.h"
-
-using namespace std;
-
-using namespace Poco;
-using namespace Poco::Net;
-
-class IndigoRequestHandler: public HTTPRequestHandler
+ThreadPoolCollector::ThreadPoolCollectorRunnable::ThreadPoolCollectorRunnable(ThreadPool &pool):
+	pool(pool),
+	stopCollection()
 {
-public:
-	IndigoRequestHandler();
+}
 
-	void handleRequest(HTTPServerRequest &request, HTTPServerResponse &response);
+void ThreadPoolCollector::ThreadPoolCollectorRunnable::run()
+{
+	while (!stopCollection.tryWait(1000))
+	{
+		pool.collect();
+	}
+}
 
-private:
-	Path resolveFSPath(const Path &uriPath);
-	void sendDirectoryListing(HTTPServerResponse &response, const string &dirURI, const vector<string> &entries);
-	void sendVirtualRootDirectory(HTTPServerResponse &response);
-	void sendDirectory(HTTPServerResponse &response, const string &path, const string &dirURI);
-	void redirectToDirectory(HTTPServerResponse &response, const string &dirURI, bool permanent);
-	void logRequest(const HTTPServerRequest &request, bool loggable);
-	void sendError(HTTPServerResponse &response, int code);
-	void sendMethodNotAllowed(HTTPServerResponse &response);
-	void sendRequestURITooLong(HTTPServerResponse &response);
-	void sendBadRequest(HTTPServerResponse &response);
-	void sendNotImplemented(HTTPServerResponse &response);
-	void sendNotFound(HTTPServerResponse &response);
-	void sendForbidden(HTTPServerResponse &response);
-	void sendInternalServerError(HTTPServerResponse &response);
-};
+void ThreadPoolCollector::ThreadPoolCollectorRunnable::stopCollecting()
+{
+	stopCollection.set();
+}
 
-#endif //INDIGOREQUESTHANDLER_H
+ThreadPoolCollector::ThreadPoolCollector(ThreadPool &pool): runnable(pool)
+{
+}
+
+ThreadPoolCollector::~ThreadPoolCollector()
+{
+	stopCollecting();
+}
+
+void ThreadPoolCollector::startCollecting()
+{
+	start(runnable);
+}
+
+void ThreadPoolCollector::stopCollecting()
+{
+	if (isRunning())
+	{
+		runnable.stopCollecting();
+		join();
+	}
+}
