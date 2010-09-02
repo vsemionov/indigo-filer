@@ -50,6 +50,7 @@ public:
 		bool collectIdleThreads,
 		const string &root,
 		const set<string> &indexes,
+		bool autoIndex,
 		const map<string, string> &shares,
 		const map<string, string> &mimeTypes
 		);
@@ -67,6 +68,7 @@ public:
 	bool getCollectIdleThreads() const;
 	const string &getRoot() const;
 	const set<string> &getIndexes() const;
+	const bool getAutoIndex() const;
 	const set<string> &getShares() const;
 	const string &getSharePath(const string &share) const;
 	const string &getMimeType(const string &extension) const;
@@ -83,6 +85,7 @@ private:
 		bool collectIdleThreads,
 		const string &root,
 		const set<string> &indexes,
+		bool autoIndex,
 		const map<string, string> &shares,
 		const map<string, string> &mimeTypes
 		);
@@ -99,6 +102,7 @@ private:
 	const bool collectIdleThreads;
 	const string root;
 	const set<string> indexes;
+	const bool autoIndex;
 	const map<string, string> shares;
 	const map<string, string> mimeTypes;
 

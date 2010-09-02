@@ -142,6 +142,7 @@ protected:
 				config().getBool(serverSection + "." + "collectIdleThreads", false),
 				root,
 				readIndexes(index),
+				config().getBool(serverSection + "." + "autoIndex", true),
 				readShares(),
 				readMimeTypes()
 				);

@@ -56,6 +56,7 @@ const IndigoConfiguration &IndigoConfiguration::init(
 		bool collectIdleThreads,
 		const string &root,
 		const set<string> &indexes,
+		bool autoIndex,
 		const map<string, string> &shares,
 		const map<string, string> &mimeTypes
 		)
@@ -73,6 +74,7 @@ const IndigoConfiguration &IndigoConfiguration::init(
 		collectIdleThreads,
 		root,
 		indexes,
+		autoIndex,
 		shares,
 		mimeTypes
 		);
@@ -98,6 +100,7 @@ IndigoConfiguration::IndigoConfiguration(
 	bool collectIdleThreads,
 	const string &root,
 	const set<string> &indexes,
+	bool autoIndex,
 	const map<string, string> &shares,
 	const map<string, string> &mimeTypes
 	):
@@ -111,6 +114,7 @@ IndigoConfiguration::IndigoConfiguration(
 		collectIdleThreads(collectIdleThreads),
 		root(root),
 		indexes(indexes),
+		autoIndex(autoIndex),
 		shares(shares),
 		mimeTypes(mimeTypes),
 		sharesSet()
@@ -188,6 +192,11 @@ const string &IndigoConfiguration::getRoot() const
 const set<string> &IndigoConfiguration::getIndexes() const
 {
 	return indexes;
+}
+
+bool IndigoConfiguration::getAutoIndex() const
+{
+	return autoIndex;
 }
 
 const set<string> &IndigoConfiguration::getShares() const
