@@ -68,10 +68,12 @@ public:
 	bool getCollectIdleThreads() const;
 	const string &getRoot() const;
 	const set<string> &getIndexes() const;
-	const bool getAutoIndex() const;
+	bool getAutoIndex() const;
 	const set<string> &getShares() const;
 	const string &getSharePath(const string &share) const;
 	const string &getMimeType(const string &extension) const;
+
+	bool virtualRoot() const;
 
 private:
 	IndigoConfiguration(

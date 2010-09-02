@@ -221,3 +221,8 @@ const string &IndigoConfiguration::getMimeType(const string &extension) const
 	else
 		return defaultMimeType;
 }
+
+bool IndigoConfiguration::virtualRoot() const
+{
+	return getRoot().empty();
+}
