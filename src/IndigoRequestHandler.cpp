@@ -68,8 +68,18 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 		return;
 	}
 
-	const string &uri = request.getURI();
-	Path uriPath(URI(uri).getPath(), Path::PATH_UNIX);
+	URI uri;
+	try
+	{
+		uri = request.getURI();
+	}
+	catch (SyntaxException &se)
+	{
+		sendBadRequest(response);
+		return;
+	}
+
+	Path uriPath(uri.getPath(), Path::PATH_UNIX);
 
 	if (!uriPath.isAbsolute())
 	{
