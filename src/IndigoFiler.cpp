@@ -236,7 +236,10 @@ private:
 
 			string decodedShareName;
 			URI::decode(shareName, decodedShareName);
-			shares[decodedShareName] = sharePath;
+			string decodedSharePath;
+			URI::decode(sharePath, decodedSharePath);
+
+			shares[decodedShareName] = decodedSharePath;
 		}
 
 		return shares;
