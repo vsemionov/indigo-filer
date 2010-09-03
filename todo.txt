@@ -4,15 +4,15 @@ decide on and correct versioning
 sourceforge files
 
 0.9:
+authentication
+correct versioning
+
+1.x:
 unix support
 update installation instructions for unix
 handle symlinks
 better logging
 better listing format
-correct versioning
-
-1.x:
 unicode support (filenames)
-authentication
 https support (maybe)
 correct versioning
