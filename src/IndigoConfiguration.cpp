@@ -142,19 +142,33 @@ IndigoConfiguration::IndigoConfiguration(
 
 void IndigoConfiguration::validate() const
 {
-	if (!root.empty())
 	{
-		Path p(root);
-		if (!p.isAbsolute())
-			throw ApplicationException("\"" + root + "\" is not an absolute path");
+		if (!root.empty())
+		{
+			Path p(root);
+			if (!p.isAbsolute())
+				throw ApplicationException("\"" + root + "\" is not an absolute path");
+		}
 	}
 
-	map<string, string>::const_iterator it;
-	for (it = shares.begin(); it != shares.end(); ++it)
 	{
-		Path p(it->second);
-		if (!p.isAbsolute())
-			throw ApplicationException("\"" + it->second + "\" is not an absolute path");
+		map<string, string>::const_iterator it;
+		for (it = shares.begin(); it != shares.end(); ++it)
+		{
+			const string &shareName = it->first;
+			const string &sharePath = it->second;
+			Path p;
+
+			string uri = '/' + shareName + '/';
+			p.assign(uri, Path::PATH_UNIX);
+			string resolved = p.toString(Path::PATH_UNIX);
+			if (resolved != uri || p.depth() != 1)
+				throw ApplicationException("\"" + shareName + "\" is not a valid share name");
+
+			p.assign(sharePath);
+			if (!p.isAbsolute())
+				throw ApplicationException("\"" + sharePath + "\" is not an absolute path");
+		}
 	}
 }
 
