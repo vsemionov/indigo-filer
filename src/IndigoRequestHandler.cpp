@@ -241,7 +241,7 @@ string IndigoRequestHandler::findVirtualIndex()
 		{
 			const Path &index = resolveFSPath(Path("/" + *it, Path::PATH_UNIX));
 			File f(index);
-			if (!f.isDirectory())
+			if (f.isFile())
 			{
 				return index.toString();
 			}
@@ -328,7 +328,7 @@ string IndigoRequestHandler::findDirectoryIndex(const string &base)
 			index += *it;
 
 			File f(index);
-			if (!f.isDirectory())
+			if (f.isFile())
 			{
 				return index;
 			}
