@@ -79,7 +79,8 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 		return;
 	}
 
-	const Path uriPath(uri.getPath(), Path::PATH_UNIX);
+	const string processedURI = uri.getPath();
+	const Path uriPath(processedURI, Path::PATH_UNIX);
 
 	if (!uriPath.isAbsolute())
 	{
@@ -109,7 +110,7 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 		{
 			if (f.isDirectory())
 			{
-				sendDirectoryIndex(response, target, uriPath.toString(Path::PATH_UNIX));
+				sendDirectoryIndex(response, target, processedURI);
 			}
 			else
 			{
@@ -126,7 +127,7 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 			}
 			else
 			{
-				sendFile(response, target);
+				sendFile(response, fsPath);
 			}
 		}
 	}
@@ -179,7 +180,7 @@ Path IndigoRequestHandler::resolveFSPath(const Path &uriPath)
 	{
 		fsPath.makeDirectory();
 
-		const int d = uriPath.depth();
+		int d = uriPath.depth();
 		for (int i = 1; i <= d; i++)
 			fsPath.pushDirectory(uriPath[i]);
 	}
@@ -192,6 +193,13 @@ Path IndigoRequestHandler::resolveFSPath(const Path &uriPath)
 	return fsPath;
 }
 
+void IndigoRequestHandler::sendFile(HTTPServerResponse &response, const Path &path)
+{
+	string ext = path.getExtension();
+	const string &mediaType = IndigoConfiguration::get().getMimeType(ext);
+	response.sendFile(path.toString(), mediaType);
+}
+
 void IndigoRequestHandler::sendFile(HTTPServerResponse &response, const string &path)
 {
 	string ext = Path(path).getExtension();
@@ -199,9 +207,9 @@ void IndigoRequestHandler::sendFile(HTTPServerResponse &response, const string &
 	response.sendFile(path, mediaType);
 }
 
-void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, const string &dirURI, const vector<string> &entries)
+void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, const string &uri, const vector<string> &entries)
 {
-	bool root = (dirURI == "/");
+	bool root = (uri == "/");
 
 	response.setContentType("text/html");
 	response.setContentLength(HTTPResponse::UNKNOWN_CONTENT_LENGTH);
@@ -212,12 +220,12 @@ void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, co
 	out << "<html>" << endl;
 	out << "<head>" << endl;
 	out << "<title>";
-	out << "Index of " << dirURI;
+	out << "Index of " << uri;
 	out << "</title>" << endl;
 	out << "</head>" << endl;
 	out << "<body>" << endl;
 	out << "<h1>";
-	out << "Index of " << dirURI;
+	out << "Index of " << uri;
 	out << "</h1>" << endl;
 
 	if (!root)
@@ -225,7 +233,7 @@ void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, co
 		out << "<a href=\"../\">&lt;Parent Directory&gt;</a><br>" << endl;
 	}
 
-	const int l = entries.size();
+	int l = entries.size();
 	for (int i = 0; i < l; i++)
 	{
 		out << "<a href=\"" << entries[i] << "\">" << entries[i] << "</a>" << "<br>" << endl;
@@ -235,7 +243,7 @@ void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, co
 	out << "</html>" << endl;
 }
 
-string IndigoRequestHandler::findVirtualIndex()
+Path IndigoRequestHandler::findVirtualIndex()
 {
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
 
@@ -252,7 +260,7 @@ string IndigoRequestHandler::findVirtualIndex()
 			File f(index);
 			if (f.isFile())
 			{
-				return index.toString();
+				return index;
 			}
 		}
 		catch (ShareNotFoundException &snfe)
@@ -266,15 +274,15 @@ string IndigoRequestHandler::findVirtualIndex()
 		}
 	}
 
-	return "";
+	return Path(false);
 }
 
 void IndigoRequestHandler::sendVirtualIndex(HTTPServerResponse &response)
 {
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
 
-	string index = findVirtualIndex();
-	if (!index.empty())
+	Path index = findVirtualIndex();
+	if (index.isAbsolute())
 	{
 		sendFile(response, index);
 		return;
@@ -354,7 +362,7 @@ string IndigoRequestHandler::findDirectoryIndex(const string &base)
 	return "";
 }
 
-void IndigoRequestHandler::sendDirectoryIndex(HTTPServerResponse &response, const string &path, const string &dirURI)
+void IndigoRequestHandler::sendDirectoryIndex(HTTPServerResponse &response, const string &path, const string &uri)
 {
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
 
@@ -395,21 +403,21 @@ void IndigoRequestHandler::sendDirectoryIndex(HTTPServerResponse &response, cons
 		++it;
 	}
 
-	sendDirectoryListing(response, dirURI, entries);
+	sendDirectoryListing(response, uri, entries);
 }
 
-void IndigoRequestHandler::redirectToDirectory(HTTPServerResponse &response, const string &dirURI, bool permanent)
+void IndigoRequestHandler::redirectToDirectory(HTTPServerResponse &response, const string &uri, bool permanent)
 {
 	if (!permanent)
 	{
-		response.redirect(dirURI);
+		response.redirect(uri);
 	}
 	else
 	{
 		response.setStatusAndReason(HTTPResponse::HTTP_MOVED_PERMANENTLY);
 		response.setContentLength(0);
 		response.setChunkedTransferEncoding(false);
-		response.set("Location", dirURI);
+		response.set("Location", uri);
 		response.send();
 	}
 }

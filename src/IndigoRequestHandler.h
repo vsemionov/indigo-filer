@@ -48,13 +48,14 @@ public:
 
 private:
 	static Path resolveFSPath(const Path &uriPath);
+	static void sendFile(HTTPServerResponse &response, const Path &path);
 	static void sendFile(HTTPServerResponse &response, const string &path);
-	static void sendDirectoryListing(HTTPServerResponse &response, const string &dirURI, const vector<string> &entries);
-	static string findVirtualIndex();
+	static void sendDirectoryListing(HTTPServerResponse &response, const string &uri, const vector<string> &entries);
+	static Path findVirtualIndex();
 	static void sendVirtualIndex(HTTPServerResponse &response);
 	static string findDirectoryIndex(const string &base);
-	static void sendDirectoryIndex(HTTPServerResponse &response, const string &path, const string &dirURI);
-	static void redirectToDirectory(HTTPServerResponse &response, const string &dirURI, bool permanent);
+	static void sendDirectoryIndex(HTTPServerResponse &response, const string &path, const string &uri);
+	static void redirectToDirectory(HTTPServerResponse &response, const string &uri, bool permanent);
 	static void logRequest(const HTTPServerRequest &request);
 	static void sendError(HTTPServerResponse &response, int code);
 	static void sendMethodNotAllowed(HTTPServerResponse &response);

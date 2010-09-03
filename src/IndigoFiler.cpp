@@ -258,7 +258,7 @@ private:
 			line = line.substr(0, line.find('#'));
 
 			StringTokenizer tok(line, " \t", StringTokenizer::TOK_IGNORE_EMPTY);
-			const int cnt = tok.count();
+			int cnt = tok.count();
 			if (cnt >= 2)
 			{
 				const string &type = tok[0];
