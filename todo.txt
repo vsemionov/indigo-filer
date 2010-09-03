@@ -1,15 +1,18 @@
 0.5:
+uri points to file but real path is a directory
 trim leading and trailing '/' in share names
 percent-encoded share name ".." appears in listing
 percent-decode share paths?
 percent-decode server name?
 test send/recv timeout
+refactor string<->path conversions
+write install document
 decide on and correct versioning
 sourceforge files
 
 0.9:
-installation instructions
 unix support
+installation instructions for unix
 handle symlinks
 better logging
 better listing format
