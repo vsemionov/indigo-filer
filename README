@@ -11,6 +11,7 @@ Shares are specified as settings in the [VirtualRoot] section in the
 configuration file with the following format:
 <share-name> = <share-path>
 Share names may not contain the '/' character.
+Share names may be percent encoded, which is necessary for the '.' character.
 NOTE: If Server.root is set to a filesystem path, the root directory listing
 will contain entries of the real root, but requests with an URI other than "/"
 that match a share name will be served from the matching share.
