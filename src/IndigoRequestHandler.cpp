@@ -239,7 +239,8 @@ string IndigoRequestHandler::findVirtualIndex()
 	{
 		try
 		{
-			const Path &index = resolveFSPath(Path("/" + *it, Path::PATH_UNIX));
+			const Path indexURI = Path('/' + *it, Path::PATH_UNIX);
+			const Path &index = resolveFSPath(indexURI);
 			File f(index);
 			if (f.isFile())
 			{
@@ -284,7 +285,8 @@ void IndigoRequestHandler::sendVirtualIndex(HTTPServerResponse &response)
 		const string &shareName = *it;
 		try
 		{
-			const Path &fsPath = resolveFSPath(Path("/" + shareName, Path::PATH_UNIX));
+			const Path shareURI = Path('/' + shareName, Path::PATH_UNIX);
+			const Path &fsPath = resolveFSPath(shareURI);
 			File f(fsPath);
 
 			if (!f.isHidden())
