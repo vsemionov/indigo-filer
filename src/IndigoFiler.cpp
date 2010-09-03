@@ -230,7 +230,7 @@ private:
 			if (shareName.empty())
 				continue;
 
-			const string &sharePath = config().getString(sharesSection + "." + shareName, "");
+			string sharePath = config().getString(sharesSection + "." + shareName, "");
 			if (sharePath.empty())
 				continue;
 

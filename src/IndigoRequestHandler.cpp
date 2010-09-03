@@ -100,8 +100,8 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 			}
 		}
 
-		const Path &fsPath = resolveFSPath(uriPath);
-		const string &target = fsPath.toString();
+		Path fsPath = resolveFSPath(uriPath);
+		string target = fsPath.toString();
 
 		File f(target);
 		if (f.isDirectory())
@@ -186,7 +186,7 @@ Path IndigoRequestHandler::resolveFSPath(const Path &uriPath)
 
 void IndigoRequestHandler::sendFile(HTTPServerResponse &response, const string &path)
 {
-	const string &ext = Path(path).getExtension();
+	string ext = Path(path).getExtension();
 	const string &mediaType = IndigoConfiguration::get().getMimeType(ext);
 	response.sendFile(path, mediaType);
 }
@@ -231,7 +231,7 @@ string IndigoRequestHandler::findVirtualIndex()
 {
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
 
-	const set<string> indexes = configuration.getIndexes();
+	const set<string> &indexes = configuration.getIndexes();
 
 	set<string>::const_iterator it;
 	set<string>::const_iterator end = indexes.end();
@@ -239,8 +239,8 @@ string IndigoRequestHandler::findVirtualIndex()
 	{
 		try
 		{
-			const Path indexURI = Path('/' + *it, Path::PATH_UNIX);
-			const Path &index = resolveFSPath(indexURI);
+			Path indexURI = Path('/' + *it, Path::PATH_UNIX);
+			Path index = resolveFSPath(indexURI);
 			File f(index);
 			if (f.isFile())
 			{
@@ -265,7 +265,7 @@ void IndigoRequestHandler::sendVirtualIndex(HTTPServerResponse &response)
 {
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
 
-	const string &index = findVirtualIndex();
+	string index = findVirtualIndex();
 	if (!index.empty())
 	{
 		sendFile(response, index);
@@ -279,14 +279,14 @@ void IndigoRequestHandler::sendVirtualIndex(HTTPServerResponse &response)
 	vector<string> entries;
 
 	set<string>::const_iterator it;
-	const set<string>::const_iterator &end = shares.end();
+	set<string>::const_iterator end = shares.end();
 	for (it = shares.begin(); it != end; ++it)
 	{
 		const string &shareName = *it;
 		try
 		{
-			const Path shareURI = Path('/' + shareName, Path::PATH_UNIX);
-			const Path &fsPath = resolveFSPath(shareURI);
+			Path shareURI = Path('/' + shareName, Path::PATH_UNIX);
+			Path fsPath = resolveFSPath(shareURI);
 			File f(fsPath);
 
 			if (!f.isHidden())
@@ -316,7 +316,7 @@ string IndigoRequestHandler::findDirectoryIndex(const string &base)
 {
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
 
-	const set<string> indexes = configuration.getIndexes(true);
+	const set<string> &indexes = configuration.getIndexes(true);
 
 	set<string>::const_iterator it;
 	set<string>::const_iterator end = indexes.end();
@@ -350,7 +350,7 @@ void IndigoRequestHandler::sendDirectoryIndex(HTTPServerResponse &response, cons
 {
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
 
-	const string &index = findDirectoryIndex(path);
+	string index = findDirectoryIndex(path);
 	if (!index.empty())
 	{
 		sendFile(response, index);
@@ -413,7 +413,7 @@ void IndigoRequestHandler::logRequest(const HTTPServerRequest &request)
 	{
 		const string &method = request.getMethod();
 		const string &uri = request.getURI();
-		const string &host = request.clientAddress().host().toString();
+		string host = request.clientAddress().host().toString();
 
 		string logString = host + " - " + method + " " + uri;
 

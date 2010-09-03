@@ -121,54 +121,43 @@ IndigoConfiguration::IndigoConfiguration(
 		mimeTypes(mimeTypes),
 		sharesSet()
 {
+	for (map<string, string>::const_iterator it = shares.begin(); it != shares.end(); ++it)
 	{
-		map<string, string>::const_iterator it;
-		for (it = shares.begin(); it != shares.end(); ++it)
-		{
-			sharesSet.insert(it->first);
-		}
+		sharesSet.insert(it->first);
 	}
 
+	for (set<string>::const_iterator it = indexes.begin(); it != indexes.end(); ++it)
 	{
-		set<string>::const_iterator it;
-		for (it = indexes.begin(); it != indexes.end(); ++it)
-		{
-			string index = *it;
-			replaceInPlace(index, string("/"), string(1, Path::separator()));
-			indexesNative.insert(index);
-		}
+		string index = *it;
+		replaceInPlace(index, string("/"), string(1, Path::separator()));
+		indexesNative.insert(index);
 	}
 }
 
 void IndigoConfiguration::validate() const
 {
+	if (!root.empty())
 	{
-		if (!root.empty())
-		{
-			Path p(root);
-			if (!p.isAbsolute())
-				throw ApplicationException("\"" + root + "\" is not an absolute path");
-		}
+		Path p(root);
+		if (!p.isAbsolute())
+			throw ApplicationException("\"" + root + "\" is not an absolute path");
 	}
 
+	for (map<string, string>::const_iterator it = shares.begin(); it != shares.end(); ++it)
 	{
-		map<string, string>::const_iterator it;
-		for (it = shares.begin(); it != shares.end(); ++it)
-		{
-			const string &shareName = it->first;
-			const string &sharePath = it->second;
-			Path p;
+		const string &shareName = it->first;
+		const string &sharePath = it->second;
+		Path p;
 
-			string uri = '/' + shareName + '/';
-			p.assign(uri, Path::PATH_UNIX);
-			string resolved = p.toString(Path::PATH_UNIX);
-			if (resolved != uri || p.depth() != 1)
-				throw ApplicationException("\"" + shareName + "\" is not a valid share name");
+		string uri = '/' + shareName + '/';
+		p.assign(uri, Path::PATH_UNIX);
+		string resolved = p.toString(Path::PATH_UNIX);
+		if (resolved != uri || p.depth() != 1)
+			throw ApplicationException("\"" + shareName + "\" is not a valid share name");
 
-			p.assign(sharePath);
-			if (!p.isAbsolute())
-				throw ApplicationException("\"" + sharePath + "\" is not an absolute path");
-		}
+		p.assign(sharePath);
+		if (!p.isAbsolute())
+			throw ApplicationException("\"" + sharePath + "\" is not an absolute path");
 	}
 }
 
@@ -237,7 +226,7 @@ const set<string> &IndigoConfiguration::getShares() const
 
 const string &IndigoConfiguration::getSharePath(const string &share) const
 {
-	const map<string, string>::const_iterator &it = shares.find(share);
+	map<string, string>::const_iterator it = shares.find(share);
 	if (it != shares.end())
 		return it->second;
 	else
@@ -246,7 +235,7 @@ const string &IndigoConfiguration::getSharePath(const string &share) const
 
 const string &IndigoConfiguration::getMimeType(const string &extension) const
 {
-	const map<string, string>::const_iterator &it = mimeTypes.find(extension);
+	map<string, string>::const_iterator it = mimeTypes.find(extension);
 	if (it != mimeTypes.end())
 		return it->second;
 	else
