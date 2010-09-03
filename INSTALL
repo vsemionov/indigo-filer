@@ -1,0 +1,16 @@
+INSTALLATION INSTRUCTIONS
+
+I. Windows
+Either use the provided automated installer, or build from source.
+
+To build from source, you will need:
+ - MinGW and MSYS
+ - POCO C++ Libraries
+
+You will also have to edit the makefile in the main distribution directory to
+match your system.
+
+II. Unix
+The procedure for building from source is essentially the same as for Windows.
+After making small changes to the makefile, Indigo Filer may build under Unix.
+However, Unix is not supported yet.

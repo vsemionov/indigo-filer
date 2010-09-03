@@ -1,12 +1,11 @@
 0.5:
 test send/recv timeout
-write install document
 decide on and correct versioning
 sourceforge files
 
 0.9:
 unix support
-installation instructions for unix
+update installation instructions for unix
 handle symlinks
 better logging
 better listing format
