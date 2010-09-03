@@ -79,7 +79,7 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 		return;
 	}
 
-	Path uriPath(uri.getPath(), Path::PATH_UNIX);
+	const Path uriPath(uri.getPath(), Path::PATH_UNIX);
 
 	if (!uriPath.isAbsolute())
 	{
@@ -100,26 +100,34 @@ void IndigoRequestHandler::handleRequest(HTTPServerRequest &request, HTTPServerR
 			}
 		}
 
-		Path fsPath = resolveFSPath(uriPath);
-		string target = fsPath.toString();
+		const Path fsPath = resolveFSPath(uriPath);
+		const string target = fsPath.toString();
 
 		File f(target);
-		if (f.isDirectory())
+
+		if (uriPath.isDirectory())
 		{
-			if (uriPath.isDirectory())
+			if (f.isDirectory())
 			{
 				sendDirectoryIndex(response, target, uriPath.toString(Path::PATH_UNIX));
 			}
 			else
 			{
-				Path uriDirPath = uriPath;
-				uriDirPath.makeDirectory();
-				redirectToDirectory(response, uriDirPath.toString(Path::PATH_UNIX), false);
+				sendNotFound(response);
 			}
 		}
 		else
 		{
-			sendFile(response, target);
+			if (f.isDirectory())
+			{
+				Path uriDirPath = uriPath;
+				uriDirPath.makeDirectory();
+				redirectToDirectory(response, uriDirPath.toString(Path::PATH_UNIX), false);
+			}
+			else
+			{
+				sendFile(response, target);
+			}
 		}
 	}
 	catch (ShareNotFoundException &snfe)
