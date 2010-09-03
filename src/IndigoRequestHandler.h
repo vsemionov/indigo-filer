@@ -47,23 +47,23 @@ public:
 	void handleRequest(HTTPServerRequest &request, HTTPServerResponse &response);
 
 private:
-	Path resolveFSPath(const Path &uriPath);
-	void sendFile(HTTPServerResponse &response, const string &path);
-	void sendDirectoryListing(HTTPServerResponse &response, const string &dirURI, const vector<string> &entries);
-	string findVirtualIndex();
-	void sendVirtualIndex(HTTPServerResponse &response);
-	string findDirectoryIndex(const string &base);
-	void sendDirectoryIndex(HTTPServerResponse &response, const string &path, const string &dirURI);
-	void redirectToDirectory(HTTPServerResponse &response, const string &dirURI, bool permanent);
-	void logRequest(const HTTPServerRequest &request);
-	void sendError(HTTPServerResponse &response, int code);
-	void sendMethodNotAllowed(HTTPServerResponse &response);
-	void sendRequestURITooLong(HTTPServerResponse &response);
-	void sendBadRequest(HTTPServerResponse &response);
-	void sendNotImplemented(HTTPServerResponse &response);
-	void sendNotFound(HTTPServerResponse &response);
-	void sendForbidden(HTTPServerResponse &response);
-	void sendInternalServerError(HTTPServerResponse &response);
+	static Path resolveFSPath(const Path &uriPath);
+	static void sendFile(HTTPServerResponse &response, const string &path);
+	static void sendDirectoryListing(HTTPServerResponse &response, const string &dirURI, const vector<string> &entries);
+	static string findVirtualIndex();
+	static void sendVirtualIndex(HTTPServerResponse &response);
+	static string findDirectoryIndex(const string &base);
+	static void sendDirectoryIndex(HTTPServerResponse &response, const string &path, const string &dirURI);
+	static void redirectToDirectory(HTTPServerResponse &response, const string &dirURI, bool permanent);
+	static void logRequest(const HTTPServerRequest &request);
+	static void sendError(HTTPServerResponse &response, int code);
+	static void sendMethodNotAllowed(HTTPServerResponse &response);
+	static void sendRequestURITooLong(HTTPServerResponse &response);
+	static void sendBadRequest(HTTPServerResponse &response);
+	static void sendNotImplemented(HTTPServerResponse &response);
+	static void sendNotFound(HTTPServerResponse &response);
+	static void sendForbidden(HTTPServerResponse &response);
+	static void sendInternalServerError(HTTPServerResponse &response);
 };
 
 #endif //INDIGOREQUESTHANDLER_H
