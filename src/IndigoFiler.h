@@ -34,6 +34,8 @@
 #define APP_NAME_UNIX "indigo-filer"
 #define APP_VERSION "0.5-pre"
 
+#define SERVER_FIELD_VALUE APP_NAME_SHORT "/" APP_VERSION
+
 #define APP_COPYRIGHT_NOTICE \
 	"Copyright (C) 2010, Victor Semionov" "\n" \
 	"All rights reserved." "\n"

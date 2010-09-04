@@ -158,7 +158,7 @@ protected:
 			params->setMaxThreads(configuration.getMaxThreads());
 			params->setMaxQueued(configuration.getMaxQueued());
 			params->setServerName(configuration.getServerName());
-			params->setSoftwareVersion(APP_NAME_SHORT "/" APP_VERSION);
+			params->setSoftwareVersion(SERVER_FIELD_VALUE);
 			params->setTimeout(configuration.getTimeout() * 1000000);
 			params->setKeepAlive(configuration.getKeepalive());
 			params->setKeepAliveTimeout(configuration.getKeepaliveTimeout() * 1000000);

@@ -39,6 +39,7 @@
 #include "Poco/DirectoryIterator.h"
 #include "Poco/NumberFormatter.h"
 
+#include "IndigoFiler.h"
 #include "IndigoRequestHandler.h"
 #include "IndigoConfiguration.h"
 
@@ -208,6 +209,8 @@ void IndigoRequestHandler::sendFile(HTTPServerResponse &response, const string &
 
 void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, const string &uri, const vector<string> &entries)
 {
+	const IndigoConfiguration &configuration = IndigoConfiguration::get();
+
 	bool root = (uri == "/");
 
 	response.setContentLength(HTTPResponse::UNKNOWN_CONTENT_LENGTH);
@@ -217,26 +220,30 @@ void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, co
 	ostream &out = response.send();
 
 	out << "<html>" << endl;
-	out << "<head>" << endl;
-	out << "<title>";
-	out << "Index of " << uri;
-	out << "</title>" << endl;
-	out << "</head>" << endl;
+	out << " <head>" << endl;
+	out << "  <title>" << "Index of " << uri << "</title>" << endl;
+	out << " </head>" << endl;
+
 	out << "<body>" << endl;
-	out << "<h1>";
-	out << "Index of " << uri;
-	out << "</h1>" << endl;
+	out << "<h1>" << "Index of " << uri << "</h1>" << endl;
+
+	out << "<pre>" << endl;
+	out << "<hr>" << endl;
 
 	if (!root)
 	{
-		out << "<a href=\"../\">&lt;Parent Directory&gt;</a><br>" << endl;
+		out << "<a href=\"../\">&lt;Parent Directory&gt;</a>" << endl;
 	}
 
 	int l = entries.size();
 	for (int i = 0; i < l; i++)
 	{
-		out << "<a href=\"" << entries[i] << "\">" << entries[i] << "</a>" << "<br>" << endl;
+		out << "<a href=\"" << entries[i] << "\">" << entries[i] << "</a>" << endl;
 	}
+
+	out << "</pre>" << endl;
+	out << "<hr>" << endl;
+	out << "<address>" << SERVER_FIELD_VALUE << " Server at " << configuration.getServerName() << " Port " << configuration.getPort() << "</address>" << endl;
 
 	out << "</body>" << endl;
 	out << "</html>" << endl;
