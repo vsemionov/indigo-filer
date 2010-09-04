@@ -55,7 +55,7 @@ public:
 		int threadIdleTime,
 		bool collectIdleThreads,
 		const string &root,
-		const set<string> &indexes,
+		const vector<string> &indexes,
 		bool autoIndex,
 		const map<string, string> &shares,
 		const map<string, string> &mimeTypes
@@ -79,7 +79,7 @@ public:
 	int getThreadIdleTime() const;
 	bool getCollectIdleThreads() const;
 	const string &getRoot() const;
-	const set<string> &getIndexes(bool native = false) const;
+	const vector<string> &getIndexes(bool native = false) const;
 	bool getAutoIndex() const;
 	const set<string> &getShares() const;
 	const string &getSharePath(const string &share) const;
@@ -103,7 +103,7 @@ private:
 		int threadIdleTime,
 		bool collectIdleThreads,
 		const string &root,
-		const set<string> &indexes,
+		const vector<string> &indexes,
 		bool autoIndex,
 		const map<string, string> &shares,
 		const map<string, string> &mimeTypes
@@ -126,8 +126,8 @@ private:
 	const int threadIdleTime;
 	const bool collectIdleThreads;
 	const string root;
-	const set<string> indexes;
-	set<string> indexesNative;
+	const vector<string> indexes;
+	vector<string> indexesNative;
 	const bool autoIndex;
 	const map<string, string> shares;
 	const map<string, string> mimeTypes;

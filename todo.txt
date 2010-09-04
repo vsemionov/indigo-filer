@@ -1,6 +1,5 @@
 0.5:
-threadIdleTime default 1?
-last modified header field in listings?
+map -> hashmap
 decide on and correct versioning
 sourceforge files
 

@@ -211,9 +211,9 @@ private:
 		cout << APP_COPYRIGHT_NOTICE;
 	}
 
-	set<string> readIndexes(const string &index)
+	vector<string> readIndexes(const string &index)
 	{
-		set<string> indexes;
+		vector<string> indexes;
 
 		StringTokenizer tok(index, " \t", StringTokenizer::TOK_IGNORE_EMPTY);
 		int cnt = tok.count();
@@ -223,7 +223,7 @@ private:
 			URI::decode(tok[i], idx);
 			poco_assert(idx.empty() == false);
 
-			indexes.insert(idx);
+			indexes.push_back(idx);
 		}
 
 		return indexes;

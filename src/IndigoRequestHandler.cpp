@@ -247,10 +247,10 @@ Path IndigoRequestHandler::findVirtualIndex()
 {
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
 
-	const set<string> &indexes = configuration.getIndexes();
+	const vector<string> &indexes = configuration.getIndexes();
 
-	set<string>::const_iterator it;
-	set<string>::const_iterator end = indexes.end();
+	vector<string>::const_iterator it;
+	vector<string>::const_iterator end = indexes.end();
 	for (it = indexes.begin(); it != end; ++it)
 	{
 		try
@@ -331,10 +331,10 @@ string IndigoRequestHandler::findDirectoryIndex(const string &base)
 {
 	const IndigoConfiguration &configuration = IndigoConfiguration::get();
 
-	const set<string> &indexes = configuration.getIndexes(true);
+	const vector<string> &indexes = configuration.getIndexes(true);
 
-	set<string>::const_iterator it;
-	set<string>::const_iterator end = indexes.end();
+	vector<string>::const_iterator it;
+	vector<string>::const_iterator end = indexes.end();
 	for (it = indexes.begin(); it != end; ++it)
 	{
 		try

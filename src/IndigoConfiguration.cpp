@@ -62,7 +62,7 @@ const IndigoConfiguration &IndigoConfiguration::init(
 		int threadIdleTime,
 		bool collectIdleThreads,
 		const string &root,
-		const set<string> &indexes,
+		const vector<string> &indexes,
 		bool autoIndex,
 		const map<string, string> &shares,
 		const map<string, string> &mimeTypes
@@ -118,7 +118,7 @@ IndigoConfiguration::IndigoConfiguration(
 	int threadIdleTime,
 	bool collectIdleThreads,
 	const string &root,
-	const set<string> &indexes,
+	const vector<string> &indexes,
 	bool autoIndex,
 	const map<string, string> &shares,
 	const map<string, string> &mimeTypes
@@ -150,11 +150,11 @@ IndigoConfiguration::IndigoConfiguration(
 		sharesSet.insert(it->first);
 	}
 
-	for (set<string>::const_iterator it = indexes.begin(); it != indexes.end(); ++it)
+	for (vector<string>::const_iterator it = indexes.begin(); it != indexes.end(); ++it)
 	{
 		string index = *it;
 		replaceInPlace(index, string("/"), string(1, Path::separator()));
-		indexesNative.insert(index);
+		indexesNative.push_back(index);
 	}
 }
 
@@ -260,7 +260,7 @@ const string &IndigoConfiguration::getRoot() const
 	return root;
 }
 
-const set<string> &IndigoConfiguration::getIndexes(bool native) const
+const vector<string> &IndigoConfiguration::getIndexes(bool native) const
 {
 	if (!native)
 		return indexes;
