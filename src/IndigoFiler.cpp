@@ -171,10 +171,10 @@ protected:
 			ThreadPool pool("workers", configuration.getMinThreads(), configuration.getMaxThreads(), configuration.getIdleTime());
 
 			SocketAddress saddr(configuration.getAddress(), configuration.getPort());
-			ServerSocket sock(saddr, configuration.getBacklog());
-
-			// set the socket send timeout; not done in POCO
-			sock.setSendTimeout(configuration.getTimeout() * 1000000);
+			ServerSocket sock;
+			sock.bind(saddr, false);
+			sock.listen(configuration.getBacklog());
+			sock.setSendTimeout(configuration.getTimeout() * 1000000); // not done in POCO
 
 			ThreadPoolCollector collector(pool);
 
