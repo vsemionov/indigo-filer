@@ -211,8 +211,8 @@ void IndigoRequestHandler::sendDirectoryListing(HTTPServerResponse &response, co
 {
 	bool root = (uri == "/");
 
-	response.setContentType("text/html");
 	response.setContentLength(HTTPResponse::UNKNOWN_CONTENT_LENGTH);
+	response.setContentType("text/html");
 	response.setChunkedTransferEncoding(true);
 
 	ostream &out = response.send();
@@ -440,9 +440,9 @@ void IndigoRequestHandler::sendError(HTTPServerResponse &response, int code)
 		return;
 
 	response.setStatusAndReason(HTTPResponse::HTTPStatus(code));
-	response.setChunkedTransferEncoding(false);
 	response.setContentLength(HTTPResponse::UNKNOWN_CONTENT_LENGTH);
 	response.setContentType("text/html");
+	response.setChunkedTransferEncoding(false);
 	response.setKeepAlive(false);
 
 	const string &reason = response.getReason();
