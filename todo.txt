@@ -8,6 +8,7 @@ sourceforge files
 
 0.9:
 authentication
+server status page
 unix support
 update installation instructions for unix
 handle symlinks
