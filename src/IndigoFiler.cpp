@@ -173,6 +173,9 @@ protected:
 			SocketAddress saddr(configuration.getAddress(), configuration.getPort());
 			ServerSocket sock(saddr, configuration.getBacklog());
 
+			// set the socket send timeout; not done in POCO
+			sock.setSendTimeout(configuration.getTimeout() * 1000000);
+
 			ThreadPoolCollector collector(pool);
 
 			HTTPServer srv(factory, pool, sock, params);
