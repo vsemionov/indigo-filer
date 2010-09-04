@@ -257,11 +257,10 @@ Path IndigoRequestHandler::findVirtualIndex()
 		{
 			Path indexURI = Path('/' + *it, Path::PATH_UNIX);
 			Path index = resolveFSPath(indexURI);
+
 			File f(index);
 			if (f.isFile())
-			{
 				return index;
-			}
 		}
 		catch (ShareNotFoundException &snfe)
 		{
@@ -347,9 +346,7 @@ string IndigoRequestHandler::findDirectoryIndex(const string &base)
 
 			File f(index);
 			if (f.isFile())
-			{
 				return index;
-			}
 		}
 		catch (FileException &fe)
 		{
