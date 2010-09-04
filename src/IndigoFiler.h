@@ -32,7 +32,7 @@
 #define APP_NAME "Indigo Filer"
 #define APP_NAME_SHORT "IndigoFiler"
 #define APP_NAME_UNIX "indigo-filer"
-#define APP_VERSION "0.5"
+#define APP_VERSION "0.5.1"
 
 #define SERVER_FIELD_VALUE APP_NAME_SHORT "/" APP_VERSION
 
