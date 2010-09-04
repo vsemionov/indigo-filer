@@ -1,8 +1,7 @@
 0.5:
 test send/recv timeout (eventually socket option inheritance on accept())
-tune thread priority?
 hide uncommon configuration options
-export more server options (socket timeout, keepalive, keepalive timeout, max keepalive requests, idle time, thread idle time, thread priority)
+export more server options (socket timeout, keepalive, keepalive timeout, max keepalive requests, idle time, thread idle time)
 decide on and correct versioning
 sourceforge files
 
