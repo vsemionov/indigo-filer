@@ -4,8 +4,8 @@ I. Windows
 Either use the provided automated installer, or build from source.
 
 To build from source, you will need:
- - MinGW and MSYS
- - POCO C++ Libraries
+ * MinGW and MSYS
+ * POCO C++ Libraries
 
 You will also have to edit the makefile in the main distribution directory to
 match your system.
