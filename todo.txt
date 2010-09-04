@@ -6,14 +6,14 @@ sourceforge files
 
 0.9:
 authentication
-correct versioning
-
-1.x:
 unix support
 update installation instructions for unix
 handle symlinks
+unicode support (filenames, URLs)
+correct versioning
+
+1.x:
 better logging
 better listing format
-unicode support (filenames)
 https support (maybe)
 correct versioning
