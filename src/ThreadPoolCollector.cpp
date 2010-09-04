@@ -29,6 +29,7 @@
 #include "ThreadPoolCollector.h"
 
 ThreadPoolCollector::CollectorRunnable::CollectorRunnable(ThreadPool &pool):
+	Thread("ThreadPoolCollector"),
 	pool(pool),
 	stopCollection()
 {
