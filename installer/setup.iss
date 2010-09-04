@@ -32,7 +32,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{21EEE893-9E2A-474C-AF0C-8863E493B211}
 AppName=Indigo Filer
-AppVersion=0.5
+AppVersion=0.7
 AppPublisher=Victor Semionov
 AppPublisherURL=http://www.vsemionov.org/
 AppSupportURL=http://www.vsemionov.org/indigo-filer/
@@ -45,7 +45,7 @@ OutputBaseFilename=IndigoFilerSetup
 Compression=lzma
 SolidCompression=yes
 
-UninstallDisplayName=Indigo Filer 0.5
+UninstallDisplayName=Indigo Filer 0.7
 UsePreviousAppDir=yes
 UsePreviousGroup=yes
 
