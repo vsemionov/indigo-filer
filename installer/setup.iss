@@ -41,7 +41,7 @@ DefaultDirName={pf}\Indigo Filer
 DefaultGroupName=Indigo Filer
 LicenseFile=..\LICENSE
 OutputDir=..\build
-OutputBaseFilename=IndigoFilerSetup
+OutputBaseFilename=IndigoFiler-0.7
 Compression=lzma
 SolidCompression=yes
 
