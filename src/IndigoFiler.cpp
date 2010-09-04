@@ -27,8 +27,6 @@
  */
 
 #include <string>
-#include <vector>
-#include <map>
 #include <iostream>
 
 #include "Poco/Util/ServerApplication.h"
@@ -229,11 +227,11 @@ private:
 		return indexes;
 	}
 
-	map<string, string> readShares()
+	unordered_map<string, string> readShares()
 	{
 		const string sharesSection = "VirtualRoot";
 
-		map<string, string> shares;
+		unordered_map<string, string> shares;
 
 		AbstractConfiguration::Keys keys;
 		config().keys(sharesSection, keys);
@@ -259,7 +257,7 @@ private:
 		return shares;
 	}
 
-	void readMimeTypes(string filename, map<string, string> &mimeTypes)
+	void readMimeTypes(string filename, unordered_map<string, string> &mimeTypes)
 	{
 		string filepath = locateConfiguration(filename);
 
@@ -289,9 +287,9 @@ private:
 		}
 	}
 
-	map<string, string> readMimeTypes()
+	unordered_map<string, string> readMimeTypes()
 	{
-		map<string, string> mimeTypes;
+		unordered_map<string, string> mimeTypes;
 
 		readMimeTypes("mime.types", mimeTypes);
 		readMimeTypes("mime.types.extra", mimeTypes);

@@ -1,5 +1,4 @@
 0.5:
-map -> hashmap
 decide on and correct versioning
 sourceforge files
 

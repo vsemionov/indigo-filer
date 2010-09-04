@@ -27,9 +27,7 @@
  */
 
 #include <string>
-#include <vector>
-#include <set>
-#include <map>
+#include <algorithm>
 
 #include <Poco/Path.h>
 #include <Poco/Exception.h>
@@ -64,8 +62,8 @@ const IndigoConfiguration &IndigoConfiguration::init(
 		const string &root,
 		const vector<string> &indexes,
 		bool autoIndex,
-		const map<string, string> &shares,
-		const map<string, string> &mimeTypes
+		const unordered_map<string, string> &shares,
+		const unordered_map<string, string> &mimeTypes
 		)
 {
 	poco_assert(singleton == NULL);
@@ -120,8 +118,8 @@ IndigoConfiguration::IndigoConfiguration(
 	const string &root,
 	const vector<string> &indexes,
 	bool autoIndex,
-	const map<string, string> &shares,
-	const map<string, string> &mimeTypes
+	const unordered_map<string, string> &shares,
+	const unordered_map<string, string> &mimeTypes
 	):
 		serverName(serverName),
 		address(address),
@@ -143,12 +141,13 @@ IndigoConfiguration::IndigoConfiguration(
 		autoIndex(autoIndex),
 		shares(shares),
 		mimeTypes(mimeTypes),
-		sharesSet()
+		shareVec()
 {
-	for (map<string, string>::const_iterator it = shares.begin(); it != shares.end(); ++it)
+	for (unordered_map<string, string>::const_iterator it = shares.begin(); it != shares.end(); ++it)
 	{
-		sharesSet.insert(it->first);
+		shareVec.push_back(it->first);
 	}
+	sort(shareVec.begin(), shareVec.end());
 
 	for (vector<string>::const_iterator it = indexes.begin(); it != indexes.end(); ++it)
 	{
@@ -167,7 +166,7 @@ void IndigoConfiguration::validate() const
 			throw ApplicationException("\"" + root + "\" is not an absolute path");
 	}
 
-	for (map<string, string>::const_iterator it = shares.begin(); it != shares.end(); ++it)
+	for (unordered_map<string, string>::const_iterator it = shares.begin(); it != shares.end(); ++it)
 	{
 		const string &shareName = it->first;
 		const string &sharePath = it->second;
@@ -273,14 +272,14 @@ bool IndigoConfiguration::getAutoIndex() const
 	return autoIndex;
 }
 
-const set<string> &IndigoConfiguration::getShares() const
+const vector<string> &IndigoConfiguration::getShares() const
 {
-	return sharesSet;
+	return shareVec;
 }
 
 const string &IndigoConfiguration::getSharePath(const string &share) const
 {
-	map<string, string>::const_iterator it = shares.find(share);
+	unordered_map<string, string>::const_iterator it = shares.find(share);
 	if (it != shares.end())
 		return it->second;
 	else
@@ -289,7 +288,7 @@ const string &IndigoConfiguration::getSharePath(const string &share) const
 
 const string &IndigoConfiguration::getMimeType(const string &extension) const
 {
-	map<string, string>::const_iterator it = mimeTypes.find(extension);
+	unordered_map<string, string>::const_iterator it = mimeTypes.find(extension);
 	if (it != mimeTypes.end())
 		return it->second;
 	else

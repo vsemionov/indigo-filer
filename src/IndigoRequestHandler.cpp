@@ -30,7 +30,6 @@
 
 #include <string>
 #include <vector>
-#include <set>
 #include <ostream>
 #include <iostream>
 
@@ -290,11 +289,11 @@ void IndigoRequestHandler::sendVirtualIndex(HTTPServerResponse &response)
 	if (!configuration.getAutoIndex())
 		throw ShareNotFoundException();
 
-	const set<string> &shares = configuration.getShares();
+	const vector<string> &shares = configuration.getShares();
 	vector<string> entries;
 
-	set<string>::const_iterator it;
-	set<string>::const_iterator end = shares.end();
+	vector<string>::const_iterator it;
+	vector<string>::const_iterator end = shares.end();
 	for (it = shares.begin(); it != end; ++it)
 	{
 		const string &shareName = *it;

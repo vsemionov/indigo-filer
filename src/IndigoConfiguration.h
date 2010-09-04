@@ -31,10 +31,10 @@
 
 #include <string>
 #include <vector>
-#include <set>
-#include <map>
+#include <tr1/unordered_map> // change to <unordered_map> on c++0x compilers
 
 using namespace std;
+using namespace std::tr1; // remove this on c++0x compilers
 
 class IndigoConfiguration
 {
@@ -57,8 +57,8 @@ public:
 		const string &root,
 		const vector<string> &indexes,
 		bool autoIndex,
-		const map<string, string> &shares,
-		const map<string, string> &mimeTypes
+		const unordered_map<string, string> &shares,
+		const unordered_map<string, string> &mimeTypes
 		);
 	static const IndigoConfiguration &get();
 
@@ -81,7 +81,7 @@ public:
 	const string &getRoot() const;
 	const vector<string> &getIndexes(bool native = false) const;
 	bool getAutoIndex() const;
-	const set<string> &getShares() const;
+	const vector<string> &getShares() const;
 	const string &getSharePath(const string &share) const;
 	const string &getMimeType(const string &extension) const;
 	bool virtualRoot() const;
@@ -105,8 +105,8 @@ private:
 		const string &root,
 		const vector<string> &indexes,
 		bool autoIndex,
-		const map<string, string> &shares,
-		const map<string, string> &mimeTypes
+		const unordered_map<string, string> &shares,
+		const unordered_map<string, string> &mimeTypes
 		);
 
 	static IndigoConfiguration *singleton;
@@ -129,10 +129,10 @@ private:
 	const vector<string> indexes;
 	vector<string> indexesNative;
 	const bool autoIndex;
-	const map<string, string> shares;
-	const map<string, string> mimeTypes;
+	const unordered_map<string, string> shares;
+	const unordered_map<string, string> mimeTypes;
 
-	set<string> sharesSet;
+	vector<string> shareVec;
 
 	static const string defaultPath;
 	static const string defaultMimeType;
