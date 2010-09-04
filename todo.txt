@@ -1,5 +1,6 @@
 0.5:
 threadIdleTime default 1?
+last modified header field in listings?
 decide on and correct versioning
 sourceforge files
 
