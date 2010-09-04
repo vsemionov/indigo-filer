@@ -1,20 +1,2 @@
-0.5:
-update version
-
-0.7:
-better listing format
-server status page
-authentication
-unicode support (filenames, URLs)
-update version
-
-0.9:
-unix support
-update installation instructions for unix
-handle symlinks
-better logging
-update version
-
-1.x:
-https support (maybe)
-update version
+0.5.0:
+done
