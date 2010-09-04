@@ -27,6 +27,7 @@
  */
 
 #include <string>
+#include <vector>
 #include <iostream>
 
 #include "Poco/Util/ServerApplication.h"
