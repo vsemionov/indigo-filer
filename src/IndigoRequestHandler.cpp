@@ -440,8 +440,10 @@ void IndigoRequestHandler::sendError(HTTPServerResponse &response, int code)
 		return;
 
 	response.setStatusAndReason(HTTPResponse::HTTPStatus(code));
-	response.setChunkedTransferEncoding(true);
+	response.setChunkedTransferEncoding(false);
+	response.setContentLength(HTTPResponse::UNKNOWN_CONTENT_LENGTH);
 	response.setContentType("text/html");
+	response.setKeepAlive(false);
 
 	const string &reason = response.getReason();
 
