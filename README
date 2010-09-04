@@ -39,6 +39,6 @@ The configuration is split into several files:
 
 The most common general settings and their defaults are provided with the stock
 indigo-filer.ini file that comes with the distribution. Less common settings
-are not listed there by default. They are documented below. Here is the
-list of undocumented settings:
+are not listed there by default. They are shown below. Here is the list of
+undocumented settings:
  * Server.collectIdleThreads - see the known issues section above
