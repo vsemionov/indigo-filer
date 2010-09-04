@@ -30,3 +30,15 @@ use the Server.collectIdleThreads option by setting it to "yes". This is safe
 and works in most cases, but is disabled by default, because it uses
 undocumented behavior. Try enabling this option if the process often has a
 large number of threads when new connections are not arriving.
+
+
+CONFIGURATION
+The configuration is split into several files:
+ * indigo-filer.ini - general server settings
+ * mime.types.user - user defined MIME types
+
+The most common general settings and their defaults are provided with the stock
+indigo-filer.ini file that comes with the distribution. Less common settings
+are not listed there by default. They are documented below. Here is the
+complete list of settings:
+ * Server.collectIdleThreads - see the known issues section above
