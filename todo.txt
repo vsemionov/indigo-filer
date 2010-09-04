@@ -1,5 +1,5 @@
 0.5:
-test send/recv timeout (eventually socket option inheritance on accept())
+threadIdleTime default 1?
 decide on and correct versioning
 sourceforge files
 
