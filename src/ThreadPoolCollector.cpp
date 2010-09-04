@@ -29,7 +29,6 @@
 #include "ThreadPoolCollector.h"
 
 ThreadPoolCollector::CollectorRunnable::CollectorRunnable(ThreadPool &pool):
-	Thread("ThreadPoolCollector"),
 	pool(pool),
 	stopCollection()
 {
@@ -48,7 +47,9 @@ void ThreadPoolCollector::CollectorRunnable::stopCollecting()
 	stopCollection.set();
 }
 
-ThreadPoolCollector::ThreadPoolCollector(ThreadPool &pool): runnable(pool)
+ThreadPoolCollector::ThreadPoolCollector(ThreadPool &pool):
+	Thread("ThreadPoolCollector"),
+	runnable(pool)
 {
 }
 
