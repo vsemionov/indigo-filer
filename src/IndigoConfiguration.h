@@ -47,6 +47,12 @@ public:
 		int minThreads,
 		int maxThreads,
 		int maxQueued,
+		int timeout,
+		bool keepalive,
+		int keepaliveTimeout,
+		int maxKeepaliveRequests,
+		int idleTime,
+		int threadIdleTime,
 		bool collectIdleThreads,
 		const string &root,
 		const set<string> &indexes,
@@ -65,6 +71,12 @@ public:
 	int getMinThreads() const;
 	int getMaxThreads() const;
 	int getMaxQueued() const;
+	int getTimeout() const;
+	bool getKeepalive() const;
+	int getKeepaliveTimeout() const;
+	int getMaxKeepaliveRequests() const;
+	int getIdleTime() const;
+	int getThreadIdleTime() const;
 	bool getCollectIdleThreads() const;
 	const string &getRoot() const;
 	const set<string> &getIndexes(bool native = false) const;
@@ -83,6 +95,12 @@ private:
 		int minThreads,
 		int maxThreads,
 		int maxQueued,
+		int timeout,
+		bool keepalive,
+		int keepaliveTimeout,
+		int maxKeepaliveRequests,
+		int idleTime,
+		int threadIdleTime,
 		bool collectIdleThreads,
 		const string &root,
 		const set<string> &indexes,
@@ -100,6 +118,12 @@ private:
 	const int minThreads;
 	const int maxThreads;
 	const int maxQueued;
+	const int timeout;
+	const bool keepalive;
+	const int keepaliveTimeout;
+	const int maxKeepaliveRequests;
+	const int idleTime;
+	const int threadIdleTime;
 	const bool collectIdleThreads;
 	const string root;
 	const set<string> indexes;

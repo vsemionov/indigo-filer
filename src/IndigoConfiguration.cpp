@@ -54,6 +54,12 @@ const IndigoConfiguration &IndigoConfiguration::init(
 		int minThreads,
 		int maxThreads,
 		int maxQueued,
+		int timeout,
+		bool keepalive,
+		int keepaliveTimeout,
+		int maxKeepaliveRequests,
+		int idleTime,
+		int threadIdleTime,
 		bool collectIdleThreads,
 		const string &root,
 		const set<string> &indexes,
@@ -72,6 +78,12 @@ const IndigoConfiguration &IndigoConfiguration::init(
 		minThreads,
 		maxThreads,
 		maxQueued,
+		timeout,
+		keepalive,
+		keepaliveTimeout,
+		maxKeepaliveRequests,
+		idleTime,
+		threadIdleTime,
 		collectIdleThreads,
 		root,
 		indexes,
@@ -98,6 +110,12 @@ IndigoConfiguration::IndigoConfiguration(
 	int minThreads,
 	int maxThreads,
 	int maxQueued,
+	int timeout,
+	bool keepalive,
+	int keepaliveTimeout,
+	int maxKeepaliveRequests,
+	int idleTime,
+	int threadIdleTime,
 	bool collectIdleThreads,
 	const string &root,
 	const set<string> &indexes,
@@ -112,6 +130,12 @@ IndigoConfiguration::IndigoConfiguration(
 		minThreads(minThreads),
 		maxThreads(maxThreads),
 		maxQueued(maxQueued),
+		timeout(timeout),
+		keepalive(keepalive),
+		keepaliveTimeout(keepaliveTimeout),
+		maxKeepaliveRequests(maxKeepaliveRequests),
+		idleTime(idleTime),
+		threadIdleTime(threadIdleTime),
 		collectIdleThreads(collectIdleThreads),
 		root(root),
 		indexes(indexes),
@@ -194,6 +218,36 @@ int IndigoConfiguration::getMaxThreads() const
 int IndigoConfiguration::getMaxQueued() const
 {
 	return maxQueued;
+}
+
+int IndigoConfiguration::getTimeout() const
+{
+	return timeout;
+}
+
+bool IndigoConfiguration::getKeepalive() const
+{
+	return keepalive;
+}
+
+int IndigoConfiguration::getKeepaliveTimeout() const
+{
+	return keepaliveTimeout;
+}
+
+int IndigoConfiguration::getMaxKeepaliveRequests() const
+{
+	return maxKeepaliveRequests;
+}
+
+int IndigoConfiguration::getIdleTime() const
+{
+	return idleTime;
+}
+
+int IndigoConfiguration::getThreadIdleTime() const
+{
+	return threadIdleTime;
 }
 
 bool IndigoConfiguration::getCollectIdleThreads() const

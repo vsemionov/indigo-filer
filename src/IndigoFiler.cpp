@@ -140,6 +140,12 @@ protected:
 				config().getInt(serverSection + "." + "minThreads", 2),
 				config().getInt(serverSection + "." + "maxThreads", 16),
 				config().getInt(serverSection + "." + "maxQueued", 64),
+				config().getInt(serverSection + "." + "timeout", 60),
+				config().getBool(serverSection + "." + "keepalive", true),
+				config().getInt(serverSection + "." + "keepaliveTimeout", 15),
+				config().getInt(serverSection + "." + "maxKeepaliveRequests", 0),
+				config().getInt(serverSection + "." + "idleTime", 60),
+				config().getInt(serverSection + "." + "threadIdleTime", 10),
 				config().getBool(serverSection + "." + "collectIdleThreads", false),
 				root,
 				readIndexes(index),
@@ -154,10 +160,15 @@ protected:
 			params->setMaxQueued(configuration.getMaxQueued());
 			params->setServerName(configuration.getServerName());
 			params->setSoftwareVersion(APP_NAME_SHORT "/" APP_VERSION);
+			params->setTimeout(configuration.getTimeout() * 1000000);
+			params->setKeepAlive(configuration.getKeepalive());
+			params->setKeepAliveTimeout(configuration.getKeepaliveTimeout() * 1000000);
+			params->setMaxKeepAliveRequests(configuration.getMaxKeepaliveRequests());
+			params->setThreadIdleTime(configuration.getThreadIdleTime() * 1000000);
 
 			HTTPRequestHandlerFactory::Ptr factory = new IndigoRequestHandlerFactory();
 
-			ThreadPool pool(configuration.getMinThreads(), configuration.getMaxThreads());
+			ThreadPool pool("workers", configuration.getMinThreads(), configuration.getMaxThreads(), configuration.getIdleTime());
 
 			SocketAddress saddr(configuration.getAddress(), configuration.getPort());
 			ServerSocket sock(saddr, configuration.getBacklog());
