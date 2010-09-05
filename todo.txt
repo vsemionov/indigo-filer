@@ -7,9 +7,10 @@ update version
 
 0.9:
 unix support
-update installation instructions for unix
+unprivileged user
 handle symlinks
 better logging
+update installation instructions for unix
 update version
 
 1.x:
